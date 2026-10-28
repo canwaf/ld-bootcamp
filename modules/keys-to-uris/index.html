@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 1: From keys to URIs – Linked Data Bootcamp</title>
+  <meta name="description" content="Why codes break when they leave their table, and how a URI carries its meaning with it.">
+  <link rel="stylesheet" href="../../assets/bootcamp.css">
+</head>
+<body vocab="https://schema.org/" prefix="dct: http://purl.org/dc/terms/">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="header">
+    <div class="width-container header__container">
+      <a href="../../" class="header__service">
+        <svg class="header__mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <line x1="5" y1="18" x2="12" y2="6" stroke="currentColor" stroke-width="2"/>
+          <line x1="12" y1="6" x2="19" y2="18" stroke="currentColor" stroke-width="2"/>
+          <line x1="5" y1="18" x2="19" y2="18" stroke="currentColor" stroke-width="2"/>
+          <circle cx="12" cy="6" r="3.5" fill="currentColor"/>
+          <circle cx="5" cy="18" r="3.5" fill="currentColor"/>
+          <circle cx="19" cy="18" r="3.5" fill="currentColor"/>
+        </svg>Linked Data Bootcamp
+      </a>
+    </div>
+  </header>
+
+  <div class="width-container">
+    <div class="phase-banner">
+      <p><strong class="tag">Beta</strong>This is a new course. Quizzes are marked in your browser as you answer.</p>
+    </div>
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../">Learn Linked Data</a></li>
+        <li><a href="../../#contents">Course contents</a></li>
+      </ol>
+    </nav>
+
+    <main class="main-wrapper" id="main-content" about="" typeof="LearningResource">
+      <link property="isPartOf" href="../../">
+      <meta property="position" content="1">
+      <meta property="learningResourceType" content="Module">
+      <meta property="inLanguage" content="en-GB">
+      <meta property="dct:modified" content="2026-10-28">
+      <link property="license dct:license" href="https://creativecommons.org/publicdomain/zero/1.0/">
+
+      <div class="grid-row">
+        <div class="grid-column-two-thirds">
+          <span class="caption-l">Module 1 of 5</span>
+          <h1 property="name dct:title">From keys to URIs</h1>
+
+          <p class="body-l" property="description">Why codes break when they leave their table, and how a URI carries its meaning with it.</p>
+
+          <nav class="contents-list" aria-label="Contents">
+            <h2 class="contents-list__title">Contents</h2>
+            <ol>
+              <li><a href="#outcomes">What you’ll learn</a></li>
+              <li><a href="#joining">Joining tables on a key</a></li>
+              <li><a href="#where-keys-break">Where keys break</a></li>
+              <li><a href="#uris">A key the whole web can use</a></li>
+              <li><a href="#concepts">Classifications are keys too</a></li>
+              <li><a href="#following">Following a URI</a></li>
+              <li><a href="#quiz">Check your understanding</a></li>
+              <li><a href="#summary">Summary</a></li>
+            </ol>
+          </nav>
+
+          <h2 id="outcomes">What you’ll learn</h2>
+
+          <p>By the end of this module you’ll be able to:</p>
+          <ul>
+            <li property="teaches">explain why a key stops working once it leaves its table</li>
+            <li property="teaches">rewrite identifier columns and classification columns as URIs</li>
+            <li property="teaches">follow a URI to find out what it identifies</li>
+          </ul>
+
+          <h2 id="joining">Joining tables on a key</h2>
+
+          <p>Water quality monitoring produces three kinds of record. A <strong>sampling point</strong> is a place where water is collected. A <strong>sample</strong> is the water collected there on one occasion. An <strong>observation</strong> is one thing measured in that sample, such as its temperature.</p>
+
+          <p>This course follows one real sampling point, <code>AN-CORBY</code>: the final effluent from Corby sewage treatment works, where treated water leaves the works.</p>
+
+          <p>Each kind of record usually lives in its own table, and the tables are joined on keys.</p>
+
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="table__caption">Samples
+                <span class="table__caption-note">A selection of rows. The <code>AN-CORBY</code> rows are real, from the Environment Agency’s Water Quality service; the <code>EX-</code> rows are made up for this course.</span>
+              </caption>
+              <thead>
+                <tr><th scope="col">Sample</th><th scope="col">Sampling point</th><th scope="col">Sampled on</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>1959114</code></td><td><code>AN-CORBY</code></td><td>31 January 2020</td></tr>
+                <tr><td><code>2119744</code></td><td><code>AN-CORBY</code></td><td>15 November 2025</td></tr>
+                <tr><td><code>3000117</code></td><td><code>EX-0002</code></td><td>2 March 2026</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="table__caption">Observations
+                <span class="table__caption-note">A selection of rows, on the same basis.</span>
+              </caption>
+              <thead>
+                <tr><th scope="col">Sample</th><th scope="col">Determinand</th><th scope="col">Result</th><th scope="col">Unit</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>1959114</code></td><td><code>0076</code></td><td>13.1</td><td>°C</td></tr>
+                <tr><td><code>2119744</code></td><td><code>0111</code></td><td>&lt;0.132</td><td>mg/l</td></tr>
+                <tr><td><code>3000117</code></td><td><code>0061</code></td><td>7.6</td><td>pH units</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>A <strong>determinand</strong> is the thing being measured. The determinand column holds a code, and a separate lookup list says what each code means.</p>
+
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="table__caption">Determinand lookup</caption>
+              <thead>
+                <tr><th scope="col">Code</th><th scope="col">Determinand</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>0061</code></td><td>pH</td></tr>
+                <tr><td><code>0076</code></td><td>Temperature of water</td></tr>
+                <tr><td><code>0111</code></td><td>Ammoniacal nitrogen as N</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <section class="activity" id="activity-1" property="hasPart" typeof="LearningResource" resource="#activity-1">
+            <span class="activity__label">Activity 1</span>
+            <h3 property="name">Follow the keys</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-1">#activity-1</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <p property="description">Using the three tables above, find where and when sample <code>2119744</code> was collected, what was measured in it, and the result.</p>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <p>The effluent was collected at <strong><code>AN-CORBY</code></strong> on <strong>15 November 2025</strong> and measured for <strong>ammoniacal nitrogen as N</strong>. The result was <strong>less than 0.132 mg/l</strong>: the <code>&lt;</code> means the amount was too small to measure more precisely than that. To get there you made two joins:</p>
+                <ol>
+                  <li>In <strong>Samples</strong>, sample <code>2119744</code> was taken at <code>AN-CORBY</code> on 15 November 2025.</li>
+                  <li>In <strong>Observations</strong>, sample <code>2119744</code> has determinand <code>0111</code>, and the <strong>Determinand lookup</strong> says <code>0111</code> is ammoniacal nitrogen as N.</li>
+                </ol>
+                <p>Each join worked because you knew which table each code belonged to. That knowledge lived in your head, not in the data.</p>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="where-keys-break">Where keys break</h2>
+
+          <p>Inside one set of tables, keys work well. They start to fail as soon as data from somewhere else joins in, or the people who understood the codes move on.</p>
+
+          <h3>The same key, a different thing</h3>
+
+          <p>The Environment Agency isn’t the only organisation watching this effluent. The water company that runs Corby sewage treatment works keeps track of what leaves the works too. It takes its own samples of the final effluent, and its laboratory system numbers them its own way. One of its records also has the number <code>2119744</code>.</p>
+
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="table__caption">Water company effluent samples
+                <span class="table__caption-note">Made up for this course. The water company’s own records look like this.</span>
+              </caption>
+              <thead>
+                <tr><th scope="col">Sample</th><th scope="col">Site</th><th scope="col">Sampled on</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>2119744</code></td><td>Corby STW final effluent</td><td>3 March 2026</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Join this table to the observations on the number, and the company’s March sample picks up the Environment Agency’s November ammonia result. Both records describe the same effluent from the same works, so nothing looks wrong, and nothing in <code>2119744</code> says which numbering system it came from.</p>
+
+          <h3>A key that needs a lookup</h3>
+
+          <p>The code <code>0111</code> means nothing without the determinand lookup. The lookup travels separately from the data, as a spreadsheet, an appendix or a page on a website. When it goes missing or out of date, every table that uses the code loses its meaning with it.</p>
+
+          <h3>A label instead of a key</h3>
+
+          <p>Classifications are often typed in by hand. Here is how three sampling points have had their type recorded.</p>
+
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="table__caption">Sampling point types, as typed
+                <span class="table__caption-note">Made up for this course.</span>
+              </caption>
+              <thead>
+                <tr><th scope="col">Sampling point</th><th scope="col">Type</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>EX-0002</code></td><td>River</td></tr>
+                <tr><td><code>EX-0003</code></td><td>river</td></tr>
+                <tr><td><code>EX-0004</code></td><td>Rivers</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>A person reads <em>River</em>, <em>river</em> and <em>Rivers</em> as the same thing. A computer grouping by that column sees three different types, each with one sampling point.</p>
+
+          <section class="activity" id="activity-2" property="hasPart" typeof="LearningResource" resource="#activity-2">
+            <span class="activity__label">Activity 2</span>
+            <h3 property="name">Count the rivers</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-2">#activity-2</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <p property="description">A colleague adds a fourth sampling point with the type <em>Freshwater river</em>. How many river sampling points are there now? Give the answer a person would give, then the answer a spreadsheet would give if you counted rows by type.</p>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <p>A person says <strong>4</strong>. A count by type gives <strong>four types with 1 each</strong>: River, river, Rivers and Freshwater river.</p>
+                <p>You could tidy the labels, but the next person to type one will undo your work. The fix is to stop joining on what people type, which this module comes to in <a href="#concepts">Classifications are keys too</a>.</p>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="uris">A key the whole web can use</h2>
+
+          <p>All three problems have the same cause: the key only makes sense inside the table it came from. A <strong>URI</strong> (uniform resource identifier) is a key whose scope is the whole web. It carries its context with it.</p>
+
+          <p>Here is the sampling point <code>AN-CORBY</code> as a URI:</p>
+
+          <pre class="pre--wrap"><code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY</span></code></pre>
+
+          <p>Each part of it does a job.</p>
+
+          <dl class="summary-list">
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code><span class="nw">https://</span></code></dt>
+              <dd class="summary-list__value">How to look it up: with a web request, like any web address.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>environment.data.gov.uk</code></dt>
+              <dd class="summary-list__value">Who is responsible for it. Only the owner of this domain can publish URIs under it. Module 2 is about this.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code><span class="nw">/water-quality/</span><wbr><span class="nw">sampling-point/</span></code></dt>
+              <dd class="summary-list__value">What kind of thing it is, and which collection it belongs to.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>AN-CORBY</code></dt>
+              <dd class="summary-list__value">The sampling point’s notation: the original key, kept exactly as the data provider wrote it.</dd>
+            </div>
+          </dl>
+
+          <p>The original key is still there. The URI adds the context that used to live in your head: who issued the key and what kind of thing it identifies.</p>
+
+          <h3 id="notation">Notation: the key a thing’s owner gives it</h3>
+
+          <p>The key at the end of the URI has a name. It’s the thing’s <strong>notation</strong>: a code that the organisation responsible for something uses to identify it. <code>AN-CORBY</code> is the notation of the sampling point, and <code>0111</code> is the notation of the determinand ammoniacal nitrogen as N.</p>
+
+          <p>A notation is different from a label. The label is the name a person reads; the notation is the code a system matches on. The Environment Agency publishes both for this sampling point:</p>
+
+          <dl class="summary-list summary-list--narrow-key">
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Notation</dt>
+              <dd class="summary-list__value"><code>AN-CORBY</code></dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Label</dt>
+              <dd class="summary-list__value">CORBY STW FINAL EFFLUENT</dd>
+            </div>
+          </dl>
+
+          <p>Labels get reworded, corrected and translated. A notation is assigned once and kept, which is why the URI is built from the notation. Linked Data records a thing’s notation and its label as separate statements, and Module 3 shows how.</p>
+
+          <p>The Environment Agency’s samples and observations get URIs in the same way, built on top of the sampling point’s URI:</p>
+
+          <pre class="pre--wrap"><code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744</span>
+<span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744/</span><wbr><span class="nw">observation/</span><wbr><span class="nw">0111</span></code></pre>
+
+          <p>A sample is always taken at exactly one sampling point, so its URI carries on from the sampling point’s URI. An observation is always made on exactly one sample, and a sample has one observation per determinand, so the determinand code finishes the observation’s URI. Module 2 looks at this pattern more closely.</p>
+
+          <p>That also fixes the clash. The water company mints URIs for its own samples under its own domain, so the two samples of the same effluent can share the number <code>2119744</code> and still be told apart:</p>
+
+          <pre class="pre--wrap"><code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744</span>
+<span class="nw">https://water-company.example/</span><wbr><span class="nw">corby-stw/</span><wbr><span class="nw">final-effluent/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744</span></code></pre>
+
+          <div class="inset-text">
+            <p>The Environment Agency publishes <code>AN-CORBY</code> and its samples and observations. URIs with a domain ending <code>.example</code> are made up for this course: that ending is reserved for examples and documentation.</p>
+          </div>
+
+          <p>And any two datasets that use the same URI join correctly, whoever made them, without either side knowing about the other.</p>
+
+          <section class="activity" id="activity-3" property="hasPart" typeof="LearningResource" resource="#activity-3">
+            <span class="activity__label">Activity 3</span>
+            <h3 property="name">Write a URI</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-3">#activity-3</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <p property="description">Sample <code>1959114</code> was also taken at <code>AN-CORBY</code>. Write the URI for its observation of determinand <code>0076</code>, temperature of water.</p>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <pre class="pre--wrap"><code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">1959114/</span><wbr><span class="nw">observation/</span><wbr><span class="nw">0076</span></code></pre>
+                <p>Start from the sampling point, add the sample, then add the determinand. Each step is a key you already had in the tables, which is what makes the pattern predictable enough to write by hand.</p>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="concepts">Classifications are keys too</h2>
+
+          <p>Columns like determinand and type classify a record. They deserve URIs as much as the records do. Each value becomes a <strong>concept</strong>: a thing in its own right, with one URI and one place where its label is kept.</p>
+
+          <pre class="pre--wrap"><code><span class="nw">https://data.example/</span><wbr><span class="nw">determinands/</span><wbr><span class="nw">Concept/</span><wbr><span class="nw">0111</span>
+<span class="nw">https://data.example/</span><wbr><span class="nw">sampling-point-types/</span><wbr><span class="nw">Concept/</span><wbr><span class="nw">river</span></code></pre>
+
+          <p class="body-s secondary-text">Each concept’s URI is made from the name of its group of concepts, the word <code>Concept</code>, and the concept’s notation. These two use a made-up domain.</p>
+
+          <p>Now the data stores the concept’s URI, and the concept holds its label. Every sampling point on a river points at the same URI, so a filter or a count matches exactly. <em>River</em>, <em>river</em> and <em>Rivers</em> become one concept with one label.</p>
+
+          <p>The label is also free to change. If the determinand is renamed, or given a Welsh label alongside the English one, the concept changes in one place and every observation that uses its URI stays as it is.</p>
+
+          <div class="inset-text">
+            <p>A group of related concepts, such as every determinand or every sampling point type, is called a <strong>concept scheme</strong>. Module 3 covers how to describe one.</p>
+          </div>
+
+          <h2 id="following">Following a URI</h2>
+
+          <p>A URI is also a web address. People care about the things the data describes, so a URI should tell anyone who looks it up what it identifies. The lookup list that used to travel separately is now one request away.</p>
+
+          <p>Looking up a URI is called <strong>dereferencing</strong> it.</p>
+
+          <section class="activity" id="activity-4" property="hasPart" typeof="LearningResource" resource="#activity-4">
+            <span class="activity__label">Activity 4</span>
+            <h3 property="name">Look up a sampling point</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-4">#activity-4</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <p property="description">Open <a href="https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY" target="_blank" rel="noreferrer noopener">the URI for AN-CORBY (opens in new tab)</a> in your browser. Write down two facts about the sampling point that the tables in this module leave out.</p>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">What this shows</span></summary>
+              <div class="details__text">
+                <p>The sampling point page tells you, among other things, that <code>AN-CORBY</code> is <em>Corby STW final effluent</em>, that it’s a sewage discharge of treated effluent from a water company, and that it’s in the Environment Agency’s Anglian region.</p>
+                <p>Everything you found came from the key itself. The URI did the job of the lookup file, and of the colleague who knew what the codes meant.</p>
+                <p>Your browser asked for a web page, so that’s what came back. A program asking for the same URI can get data instead. Module 4 shows how.</p>
+              </div>
+            </details>
+          </section>
+
+          <section class="quiz quiz--5" id="quiz" property="hasPart" typeof="Quiz" resource="#quiz">
+            <h2 property="name">Check your understanding</h2>
+            <meta property="assesses" content="Why local keys fail outside their table, the parts of a URI, concepts as keys, and dereferencing">
+            <p>Choose an answer to see whether it’s right. You can change your answer as often as you like.</p>
+
+            <div class="quiz__questions">
+              <fieldset class="fieldset quiz__question" id="q1" property="hasPart" typeof="Question" resource="#q1">
+                <legend class="fieldset__legend"><span class="caption-m">Question 1 of 5</span><span property="text">Two tables both contain the key <code>2119744</code>. What do you need to know before joining them?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q1-a">
+                    <input class="radios__input" id="q1-a" name="q1" type="radio">
+                    <label class="radios__label" for="q1-a" property="text">Nothing. The keys match, so the rows belong together.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> Matching characters only tell you the keys look the same. The water company’s sample picked up river results through exactly this join.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q1-b">
+                    <input class="radios__input" id="q1-b" name="q1" type="radio">
+                    <label class="radios__label" for="q1-b" property="text">Whether both tables use the same numbering system for the same kind of thing.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> A bare key carries no context. You have to know where it came from, and that knowledge lives outside the data.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q1-c">
+                    <input class="radios__input" id="q1-c" name="q1" type="radio">
+                    <label class="radios__label" for="q1-c" property="text">Whether both columns are stored as numbers.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> Matching data types makes the join run. It says nothing about whether the rows describe the same thing.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q2" property="hasPart" typeof="Question" resource="#q2">
+                <legend class="fieldset__legend"><span class="caption-m">Question 2 of 5</span><span property="text">Which part of <code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY</span></code> tells you who is responsible for it?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q2-a">
+                    <input class="radios__input" id="q2-a" name="q2" type="radio">
+                    <label class="radios__label" for="q2-a" property="text"><code><span class="nw">https://</span></code></label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> The scheme tells you how to look the URI up, with a web request.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q2-b">
+                    <input class="radios__input" id="q2-b" name="q2" type="radio">
+                    <label class="radios__label" for="q2-b" property="text"><code>environment.data.gov.uk</code></label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> Only the domain’s owner can publish URIs under it, so the domain names who is responsible.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q2-c">
+                    <input class="radios__input" id="q2-c" name="q2" type="radio">
+                    <label class="radios__label" for="q2-c" property="text"><code><span class="nw">/water-quality/</span><wbr><span class="nw">sampling-point/</span></code></label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> The path tells you what kind of thing it is and which collection it belongs to.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q2-d">
+                    <input class="radios__input" id="q2-d" name="q2" type="radio">
+                    <label class="radios__label" for="q2-d" property="text"><code>AN-CORBY</code></label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> That’s the original key from the data provider, kept as it was.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q3" property="hasPart" typeof="Question" resource="#q3">
+                <legend class="fieldset__legend"><span class="caption-m">Question 3 of 5</span><span property="text">What happens to the key <code>AN-CORBY</code> when the sampling point is given a URI?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q3-a">
+                    <input class="radios__input" id="q3-a" name="q3" type="radio">
+                    <label class="radios__label" for="q3-a" property="text">It’s replaced with a new ID generated by the database.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> A database ID means nothing to the people who use the data. The provider’s own key is the one they already know.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q3-b">
+                    <input class="radios__input" id="q3-b" name="q3" type="radio">
+                    <label class="radios__label" for="q3-b" property="text">It’s kept as the last part of the URI.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> The URI adds context around the key. The key itself stays exactly as the provider wrote it.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q3-c">
+                    <input class="radios__input" id="q3-c" name="q3" type="radio">
+                    <label class="radios__label" for="q3-c" property="text">It moves into a lookup file that maps keys to URIs.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> A URI is there to replace the lookup file, since it carries its own context.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q4" property="hasPart" typeof="Question" resource="#q4">
+                <legend class="fieldset__legend"><span class="caption-m">Question 4 of 5</span><span property="text">A type column holds <em>River</em>, <em>river</em> and <em>Rivers</em>. Which change fixes this for good?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q4-a">
+                    <input class="radios__input" id="q4-a" name="q4" type="radio">
+                    <label class="radios__label" for="q4-a" property="text">Tidy the labels so they all read <em>River</em>.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> That works until the next person types a label. The column still holds whatever people type.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q4-b">
+                    <input class="radios__input" id="q4-b" name="q4" type="radio">
+                    <label class="radios__label" for="q4-b" property="text">Convert every label to upper case before counting.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> That merges <em>River</em> and <em>river</em>, and leaves <em>RIVERS</em> on its own.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q4-c">
+                    <input class="radios__input" id="q4-c" name="q4" type="radio">
+                    <label class="radios__label" for="q4-c" property="text">Store the URI of a river concept, and keep its label with the concept.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> Every river sampling point points at one URI, so counts and filters match exactly, and the label lives in one place.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q5" property="hasPart" typeof="Question" resource="#q5">
+                <legend class="fieldset__legend"><span class="caption-m">Question 5 of 5</span><span property="text">You type a sampling point’s URI into your browser. What should you get back?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q5-a">
+                    <input class="radios__input" id="q5-a" name="q5" type="radio">
+                    <label class="radios__label" for="q5-a" property="text">An error, because a URI is only an identifier.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> A URI that can be looked up is far more useful than one that only identifies. Looking it up should tell you what it identifies.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q5-b">
+                    <input class="radios__input" id="q5-b" name="q5" type="radio">
+                    <label class="radios__label" for="q5-b" property="text">A page describing that sampling point.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> Your browser asks for a web page, so it gets one about the sampling point. A program asking the same URI can get data instead.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q5-c">
+                    <input class="radios__input" id="q5-c" name="q5" type="radio">
+                    <label class="radios__label" for="q5-c" property="text">A download of every sampling point in the dataset.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> The URI identifies one sampling point, so it describes that one. The whole dataset has a URI of its own.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="quiz__score" aria-live="polite">
+              <p>You’ve answered <span class="count-answered"></span> of 5 questions and got <span class="count-correct"></span> right.</p>
+            </div>
+
+            <div class="quiz__complete">
+              <div class="panel">
+                <h2 class="panel__title">Module 1 complete</h2>
+                <p class="panel__body">You answered every question correctly</p>
+              </div>
+            </div>
+          </section>
+
+          <h2 id="summary">Summary</h2>
+
+          <p>In this module you learned that:</p>
+          <ul>
+            <li>a key only makes sense inside the table it came from, and the knowledge needed to join on it lives outside the data</li>
+            <li>a URI is a key whose scope is the whole web: it names who is responsible, what kind of thing it is, and keeps the original key</li>
+            <li>classifications become concepts with URIs of their own, so filters match exactly and labels can change in one place</li>
+            <li>a URI can be looked up, and looking it up tells you what it identifies</li>
+          </ul>
+
+          <p>Module 2 picks up the domain in the URI: who gets to mint URIs, how to design them, and why they should only change when the thing they identify does.</p>
+
+          <nav class="pagination" aria-label="Pagination">
+            <div class="pagination__prev">
+              <a class="pagination__link" href="../../" rel="prev">
+                <span class="pagination__label">Previous</span>
+                Course overview
+              </a>
+            </div>
+            <div class="pagination__next">
+              <a class="pagination__link" href="../authority-and-persistence/" rel="next">
+                <span class="pagination__label">Next</span>
+                Module 2: Authority, minting and persistence
+              </a>
+            </div>
+          </nav>
+        </div>
+
+        <div class="grid-column-one-third">
+          <aside class="related" role="complementary">
+            <h2>This page is data</h2>
+            <p>This module, each activity and each quiz question has a URI of its own. The activities and questions use hash URIs, such as <a href="#activity-1">#activity-1</a> and <a href="#q3">#q3</a>, which point to a part of this page.</p>
+            <p>View the source to see them described in RDFa. The right answer to each question is marked there too.</p>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="width-container">
+      <p>Linked Data Bootcamp is built with HTML and CSS.</p>
+      <p>This course is dedicated to the public domain under <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license">CC0 1.0 Universal</a>.</p>
+      <p>Contains public sector information from the Environment Agency, licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 3: Triples and vocabularies – Linked Data Bootcamp</title>
+  <meta name="description" content="Statements as triples, and the vocabularies that describe catalogues, concepts and observations: DCAT, SKOS and SOSA.">
+  <link rel="stylesheet" href="../../assets/bootcamp.css">
+</head>
+<body vocab="https://schema.org/" prefix="dct: http://purl.org/dc/terms/">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="header">
+    <div class="width-container header__container">
+      <a href="../../" class="header__service">
+        <svg class="header__mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <line x1="5" y1="18" x2="12" y2="6" stroke="currentColor" stroke-width="2"/>
+          <line x1="12" y1="6" x2="19" y2="18" stroke="currentColor" stroke-width="2"/>
+          <line x1="5" y1="18" x2="19" y2="18" stroke="currentColor" stroke-width="2"/>
+          <circle cx="12" cy="6" r="3.5" fill="currentColor"/>
+          <circle cx="5" cy="18" r="3.5" fill="currentColor"/>
+          <circle cx="19" cy="18" r="3.5" fill="currentColor"/>
+        </svg>Linked Data Bootcamp
+      </a>
+    </div>
+  </header>
+
+  <div class="width-container">
+    <div class="phase-banner">
+      <p><strong class="tag">Beta</strong>This is a new course. Quizzes are marked in your browser as you answer.</p>
+    </div>
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../">Learn Linked Data</a></li>
+        <li><a href="../../#contents">Course contents</a></li>
+      </ol>
+    </nav>
+
+    <main class="main-wrapper" id="main-content" about="" typeof="LearningResource">
+      <link property="isPartOf" href="../../">
+      <meta property="position" content="3">
+      <meta property="learningResourceType" content="Module">
+      <meta property="inLanguage" content="en-GB">
+      <meta property="dct:modified" content="2026-10-28">
+      <link property="license dct:license" href="https://creativecommons.org/publicdomain/zero/1.0/">
+
+      <div class="grid-row">
+        <div class="grid-column-two-thirds">
+          <span class="caption-l">Module 3 of 5</span>
+          <h1 property="name dct:title">Triples and vocabularies</h1>
+
+          <p class="body-l" property="description">Statements as triples, and the vocabularies that describe catalogues, concepts and observations: DCAT, SKOS and SOSA.</p>
+
+          <nav class="contents-list" aria-label="Contents">
+            <h2 class="contents-list__title">Contents</h2>
+            <ol>
+              <li><a href="#outcomes">What you’ll learn</a></li>
+              <li><a href="#triples">A statement in three parts</a></li>
+              <li><a href="#graph">Triples join into a graph</a></li>
+              <li><a href="#literals">Literals: values with a type</a></li>
+              <li><a href="#structured">Values with structure</a></li>
+              <li><a href="#vocabularies">Vocabularies</a></li>
+              <li><a href="#classes">Classes and classifications</a></li>
+              <li><a href="#quiz">Check your understanding</a></li>
+              <li><a href="#summary">Summary</a></li>
+            </ol>
+          </nav>
+
+          <h2 id="outcomes">What you’ll learn</h2>
+
+          <p>By the end of this module you’ll be able to:</p>
+          <ul>
+            <li property="teaches">read and write statements as subject, predicate and object</li>
+            <li property="teaches">explain how triples that share a URI join into a graph</li>
+            <li property="teaches">give a literal value the right datatype or language</li>
+            <li property="teaches">recognise a value with structure and no name of its own</li>
+            <li property="teaches">say which vocabulary a statement comes from, and why</li>
+          </ul>
+
+          <div class="inset-text">
+            <p>Everything about <code>AN-CORBY</code> on this page comes from the Environment Agency’s Water Quality service. The concept URIs use domains ending <code>.example</code> and are made up for this course, following the same pattern as the rest of the course. The vocabularies are the ones the <a href="https://agrimetrics.github.io/application-profile/">DSP Application Profile</a> sets out for environmental data on <code><span class="nw">environment.data.gov.uk</span></code>.</p>
+          </div>
+
+          <h2 id="triples">A statement in three parts</h2>
+
+          <p>Linked Data says things one small statement at a time. Each statement has three parts, so it’s called a <strong>triple</strong>:</p>
+
+          <dl class="summary-list summary-list--narrow-key">
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Subject</dt>
+              <dd class="summary-list__value">The thing the statement is about. Always a URI.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Predicate</dt>
+              <dd class="summary-list__value">What is being said about it. Also a URI, taken from a shared vocabulary.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Object</dt>
+              <dd class="summary-list__value">The value: either another thing’s URI, or a plain value such as a name, a number or a date.</dd>
+            </div>
+          </dl>
+
+          <p>Here are three triples about the sampling point. Each row is one statement.</p>
+
+          <div class="table-wrap">
+            <table class="table table--uris table--triples">
+              <caption class="table__caption">Triples about <code>AN-CORBY</code></caption>
+              <thead>
+                <tr><th scope="col">Subject</th><th scope="col">Predicate</th><th scope="col">Object</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></td><td><code>skos:notation</code></td><td><code>"AN-CORBY"</code></td></tr>
+                <tr><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></td><td><code>skos:prefLabel</code></td><td><code><span class="nw">"CORBY</span> <span class="nw">STW</span> <span class="nw">FINAL</span> <span class="nw">EFFLUENT"</span></code></td></tr>
+                <tr><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></td><td><code>skos:altLabel</code></td><td><code>"CORBY STW F/E"</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>These are the notation and label you met in Module 1, now as statements of their own. <code>skos:prefLabel</code> is the preferred label, the name to show a person, and <code>skos:altLabel</code> is another name the same thing goes by.</p>
+
+          <p>Two kinds of shorthand keep the tables readable. A URI in angle brackets, such as <code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code>, is relative to the Water Quality service’s address, <code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span></code>, in the same way a link on a web page can be relative to its site. Where a URI is long, <code>…</code> stands for the start of its path, so <code><span class="nw">&lt;…/</span><wbr><span class="nw">observation/</span><wbr><span class="nw">0111&gt;</span></code> is the observation of determinand <code>0111</code> in sample <code>2119744</code>. Names such as <code>skos:prefLabel</code> are prefixed names, which you met in Module 2.</p>
+
+          <details class="details">
+            <summary class="details__summary"><span class="details__summary-text">Prefixes used on this page</span></summary>
+            <div class="details__text">
+              <dl class="summary-list summary-list--narrow-key">
+                <div class="summary-list__row"><dt class="summary-list__key"><code>skos:</code></dt><dd class="summary-list__value"><code><span class="nw">http://</span><wbr><span class="nw">www.w3.org/</span><wbr><span class="nw">2004/</span><wbr><span class="nw">02/</span><wbr><span class="nw">skos/</span><wbr><span class="nw">core#</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>sosa:</code></dt><dd class="summary-list__value"><code><span class="nw">http://</span><wbr><span class="nw">www.w3.org/</span><wbr><span class="nw">ns/</span><wbr><span class="nw">sosa/</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>qudt:</code></dt><dd class="summary-list__value"><code><span class="nw">http://qudt.org/</span><wbr><span class="nw">schema/</span><wbr><span class="nw">qudt/</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>unit:</code></dt><dd class="summary-list__value"><code><span class="nw">http://qudt.org/</span><wbr><span class="nw">vocab/</span><wbr><span class="nw">unit/</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>geo:</code></dt><dd class="summary-list__value"><code><span class="nw">http://</span><wbr><span class="nw">www.opengis.net/</span><wbr><span class="nw">ont/</span><wbr><span class="nw">geosparql#</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>dcat:</code></dt><dd class="summary-list__value"><code><span class="nw">http://</span><wbr><span class="nw">www.w3.org/</span><wbr><span class="nw">ns/</span><wbr><span class="nw">dcat#</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>dct:</code></dt><dd class="summary-list__value"><code><span class="nw">http://purl.org/</span><wbr><span class="nw">dc/</span><wbr><span class="nw">terms/</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>defra-core:</code></dt><dd class="summary-list__value"><code><span class="nw">http://environment.data.gov.uk/</span><wbr><span class="nw">ontology/</span><wbr><span class="nw">core/</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>xsd:</code></dt><dd class="summary-list__value"><code><span class="nw">http://</span><wbr><span class="nw">www.w3.org/</span><wbr><span class="nw">2001/</span><wbr><span class="nw">XMLSchema#</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>rdf:</code></dt><dd class="summary-list__value"><code><span class="nw">http://</span><wbr><span class="nw">www.w3.org/</span><wbr><span class="nw">1999/</span><wbr><span class="nw">02/</span><wbr><span class="nw">22-rdf-syntax-ns#</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>rdfs:</code></dt><dd class="summary-list__value"><code><span class="nw">http://</span><wbr><span class="nw">www.w3.org/</span><wbr><span class="nw">2000/</span><wbr><span class="nw">01/</span><wbr><span class="nw">rdf-schema#</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>owl:</code></dt><dd class="summary-list__value"><code><span class="nw">http://</span><wbr><span class="nw">www.w3.org/</span><wbr><span class="nw">2002/</span><wbr><span class="nw">07/</span><wbr><span class="nw">owl#</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>ex:</code></dt><dd class="summary-list__value"><code><span class="nw">http://</span><wbr><span class="nw">www.example.org/</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>dataset:</code></dt><dd class="summary-list__value"><code><span class="nw">https://data.example/</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>determinand:</code></dt><dd class="summary-list__value"><code><span class="nw">https://data.example/</span><wbr><span class="nw">determinands/</span><wbr><span class="nw">Concept/</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code>area:</code></dt><dd class="summary-list__value"><code><span class="nw">https://data.example/</span><wbr><span class="nw">areas/</span><wbr><span class="nw">Concept/</span></code></dd></div>
+                <div class="summary-list__row"><dt class="summary-list__key"><code><span class="nw">sampling-point-type:</span></code></dt><dd class="summary-list__value"><code><span class="nw">https://data.example/</span><wbr><span class="nw">sampling-point-types/</span><wbr><span class="nw">Concept/</span></code></dd></div>
+              </dl>
+            </div>
+          </details>
+
+          <h3>A row becomes several triples</h3>
+
+          <p>A row in a table packs several facts together. In triples, each fact is stated on its own, and sometimes a row turns out to describe more than one thing.</p>
+
+          <section class="activity" id="activity-1" property="hasPart" typeof="LearningResource" resource="#activity-1">
+            <span class="activity__label">Activity 1</span>
+            <h3 property="name">Turn a row into triples</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-1">#activity-1</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>Module 1’s Samples table had this row:</p>
+              <div class="table-wrap">
+                <table class="table">
+                  <thead>
+                    <tr><th scope="col">Sample</th><th scope="col">Sampling point</th><th scope="col">Sampled on</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>2119744</code></td><td><code>AN-CORBY</code></td><td>15 November 2025, 08:43</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Write it as triples. You’ll need three predicates:</p>
+              <ul>
+                <li><code>sosa:isSampleOf</code>, from a sample to what it was taken from</li>
+                <li><code>sosa:isResultOf</code>, from a sample to the sampling, the act of collecting it</li>
+                <li><code>sosa:startTime</code>, from a sampling to when it started</li>
+              </ul>
+              <p>The sampling has the URI <code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">sampling/</span><wbr><span class="nw">2119744&gt;</span></code>.</p>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <div class="table-wrap">
+                  <table class="table table--uris table--triples">
+                    <thead>
+                      <tr><th scope="col">Subject</th><th scope="col">Predicate</th><th scope="col">Object</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr><td><code><span class="nw">&lt;…/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744&gt;</span></code></td><td><code>sosa:isSampleOf</code></td><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></td></tr>
+                      <tr><td><code><span class="nw">&lt;…/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744&gt;</span></code></td><td><code>sosa:isResultOf</code></td><td><code><span class="nw">&lt;…/</span><wbr><span class="nw">sampling/</span><wbr><span class="nw">2119744&gt;</span></code></td></tr>
+                      <tr><td><code><span class="nw">&lt;…/</span><wbr><span class="nw">sampling/</span><wbr><span class="nw">2119744&gt;</span></code></td><td><code>sosa:startTime</code></td><td><code><span class="nw">"2025-11-15T08:43:00"</span><wbr><span class="nw">^^xsd:</span><wbr><span class="nw">dateTime</span></code></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p>One row became three triples about two things. The date belongs to the sampling, not the sample: the sample is the water, and the sampling is the act of collecting it. The table had been holding both in one row. You’ll meet the <code>^^xsd:dateTime</code> on the end of the date in <a href="#literals">Literals: values with a type</a>.</p>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="graph">Triples join into a graph</h2>
+
+          <p>Here are the observation of ammoniacal nitrogen in sample <code>2119744</code> and the triples around it:</p>
+
+          <div class="table-wrap">
+            <table class="table table--uris table--triples">
+              <caption class="table__caption">Triples about the observation, and what it points to</caption>
+              <thead>
+                <tr><th scope="col">Subject</th><th scope="col">Predicate</th><th scope="col">Object</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code><span class="nw">&lt;…/</span><wbr><span class="nw">observation/</span><wbr><span class="nw">0111&gt;</span></code></td><td><code>sosa:hasSample</code></td><td><code><span class="nw">&lt;…/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744&gt;</span></code></td></tr>
+                <tr><td><code><span class="nw">&lt;…/</span><wbr><span class="nw">observation/</span><wbr><span class="nw">0111&gt;</span></code></td><td><code><span class="nw">sosa:</span><wbr><span class="nw">observedProperty</span></code></td><td><code>determinand:0111</code></td></tr>
+                <tr><td><code><span class="nw">&lt;…/</span><wbr><span class="nw">observation/</span><wbr><span class="nw">0111&gt;</span></code></td><td><code><span class="nw">sosa:</span><wbr><span class="nw">phenomenonTime</span></code></td><td><code><span class="nw">"2025-11-15T08:43:00"</span><wbr><span class="nw">^^xsd:</span><wbr><span class="nw">dateTime</span></code></td></tr>
+                <tr><td><code><span class="nw">&lt;…/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744&gt;</span></code></td><td><code>sosa:isSampleOf</code></td><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></td></tr>
+                <tr><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></td><td><code>skos:prefLabel</code></td><td><code><span class="nw">"CORBY</span> <span class="nw">STW</span> <span class="nw">FINAL</span> <span class="nw">EFFLUENT"</span></code></td></tr>
+                <tr><td><code>determinand:0111</code></td><td><code>skos:prefLabel</code></td><td><code><span class="nw">"Ammoniacal</span> <span class="nw">Nitrogen</span> <span class="nw">as</span> <span class="nw">N"</span></code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Wherever the same URI appears in two triples, the two statements are about the same thing, so they connect. Draw each URI once and each triple as an arrow, and the statements become a <strong>graph</strong>:</p>
+
+          <figure class="figure" id="figure-graph">
+            <div class="figure__scroll">
+              <svg viewBox="0 0 720 610" role="img" aria-labelledby="graph-title graph-desc" focusable="false">
+                <title id="graph-title">The observation of ammoniacal nitrogen as a graph</title>
+                <desc id="graph-desc">The observation links by sosa:hasSample to sample 2119744, which links by sosa:isSampleOf to the sampling point AN-CORBY, whose skos:prefLabel is CORBY STW FINAL EFFLUENT. The observation also links by sosa:observedProperty to determinand 0111, labelled Ammoniacal Nitrogen as N, and by sosa:hasResult to an unnamed result, which has qudt:upperBound 0.132 and qudt:hasUnit milligrams per litre.</desc>
+                <defs>
+                  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                    <path class="graph-arrowhead" d="M0 0 L10 5 L0 10 z"/>
+                  </marker>
+                </defs>
+
+                <line class="graph-edge" x1="285" y1="70" x2="416" y2="70" marker-end="url(#arrow)"/>
+                <text class="graph-label" x="268" y="52">sosa:observedProperty</text>
+
+                <line class="graph-edge" x1="520" y1="96" x2="520" y2="140" marker-end="url(#arrow)"/>
+                <text class="graph-label" x="530" y="124">skos:prefLabel</text>
+
+                <line class="graph-edge" x1="150" y1="98" x2="150" y2="270" marker-end="url(#arrow)"/>
+                <text class="graph-label" x="160" y="190">sosa:hasSample</text>
+
+                <line class="graph-edge" x1="225" y1="94" x2="450" y2="306" marker-end="url(#arrow)"/>
+                <text class="graph-label" x="330" y="236">sosa:hasResult</text>
+
+                <line class="graph-edge" x1="494" y1="310" x2="586" y2="276" marker-end="url(#arrow)"/>
+                <text class="graph-label" x="430" y="250">qudt:upperBound</text>
+
+                <line class="graph-edge" x1="490" y1="334" x2="545" y2="366" marker-end="url(#arrow)"/>
+                <text class="graph-label" x="380" y="372">qudt:hasUnit</text>
+
+                <line class="graph-edge" x1="150" y1="328" x2="150" y2="530" marker-end="url(#arrow)"/>
+                <text class="graph-label" x="160" y="440">sosa:isSampleOf</text>
+
+                <line class="graph-edge" x1="270" y1="560" x2="410" y2="560" marker-end="url(#arrow)"/>
+                <text class="graph-label" x="274" y="546">skos:prefLabel</text>
+
+                <ellipse class="graph-uri" cx="150" cy="70" rx="135" ry="28"/>
+                <text class="graph-text" x="150" y="75" text-anchor="middle">…/observation/0111</text>
+
+                <ellipse class="graph-uri" cx="520" cy="70" rx="102" ry="26"/>
+                <text class="graph-text" x="520" y="75" text-anchor="middle">determinand:0111</text>
+
+                <rect class="graph-literal" x="390" y="142" width="260" height="36"/>
+                <text class="graph-text" x="520" y="165" text-anchor="middle">"Ammoniacal Nitrogen as N"</text>
+
+                <ellipse class="graph-uri" cx="150" cy="300" rx="120" ry="28"/>
+                <text class="graph-text" x="150" y="305" text-anchor="middle">…/sample/2119744</text>
+
+                <circle class="graph-blank" cx="470" cy="322" r="24"/>
+                <text class="graph-text" x="470" y="327" text-anchor="middle">[ ]</text>
+
+                <rect class="graph-literal" x="590" y="250" width="110" height="36"/>
+                <text class="graph-text" x="645" y="273" text-anchor="middle">0.132</text>
+
+                <ellipse class="graph-uri" cx="600" cy="392" rx="112" ry="26"/>
+                <text class="graph-text" x="600" y="397" text-anchor="middle">unit:MilliGM-PER-L</text>
+
+                <ellipse class="graph-uri" cx="150" cy="560" rx="120" ry="28"/>
+                <text class="graph-text" x="150" y="565" text-anchor="middle">…/AN-CORBY</text>
+
+                <rect class="graph-literal" x="414" y="542" width="290" height="36"/>
+                <text class="graph-text" x="559" y="565" text-anchor="middle">"CORBY STW FINAL EFFLUENT"</text>
+              </svg>
+            </div>
+            <figcaption>The observation’s triples drawn as a graph. Each URI appears once, however many triples mention it.</figcaption>
+            <ul class="graph-key" aria-label="Key">
+              <li><span class="graph-key__swatch graph-key__swatch--uri"></span>A thing with a URI</li>
+              <li><span class="graph-key__swatch graph-key__swatch--literal"></span>A literal value</li>
+              <li><span class="graph-key__swatch graph-key__swatch--blank"></span>A thing with no URI of its own</li>
+            </ul>
+          </figure>
+
+          <p>This is the join from Module 1, done without a lookup. There, you matched codes across three tables and needed to know which table each code came from. Here, the URIs carry that knowledge, so following an arrow is the join.</p>
+
+          <p>Graphs from different places combine the same way. Put the triples from two sources together and any URI they share becomes a single point where the two graphs meet. That’s why the Environment Agency’s observations, a council’s sensors and a water company’s samples can be combined without a mapping table, as long as they use the same URIs for the things they share.</p>
+
+          <section class="activity" id="activity-2" property="hasPart" typeof="LearningResource" resource="#activity-2">
+            <span class="activity__label">Activity 2</span>
+            <h3 property="name">Follow the graph</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-2">#activity-2</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <p property="description">Start at the observation. Which predicates do you follow, in order, to find the name of the place the effluent was collected?</p>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <p><code>sosa:hasSample</code> to the sample, <code>sosa:isSampleOf</code> to the sampling point, then <code>skos:prefLabel</code> to its name, <strong>CORBY STW FINAL EFFLUENT</strong>.</p>
+                <p>Three hops, three triples, and no lookup file. In Module 5 you’ll ask exactly this question in SPARQL.</p>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="literals">Literals: values with a type</h2>
+
+          <p>An object is either a URI, which links to another thing, or a <strong>literal</strong>: a plain value. A literal can carry a <strong>datatype</strong>, written after <code>^^</code>, which says what kind of value it is.</p>
+
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="table__caption">Literals from the Water Quality data</caption>
+              <thead>
+                <tr><th scope="col">Literal</th><th scope="col">What it is</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>"AN-CORBY"</code></td><td>A string: the sampling point’s notation</td></tr>
+                <tr><td><code><span class="nw">"2025-11-15T08:43:00"</span><wbr><span class="nw">^^xsd:</span><wbr><span class="nw">dateTime</span></code></td><td>A date and time: when the sampling started</td></tr>
+                <tr><td><code><span class="nw">"2025-12-24"</span><wbr><span class="nw">^^xsd:</span><wbr><span class="nw">date</span></code></td><td>A date: when the sampling’s result became available</td></tr>
+                <tr><td><code><span class="nw">"0.132"</span><wbr><span class="nw">^^xsd:</span><wbr><span class="nw">decimal</span></code></td><td>A decimal number: the upper bound of a result</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>The datatype is what makes a value behave. As a date, <code>"2025-12-24"</code> sorts, compares and falls inside a date range correctly. As a number, <code>"0.132"</code> can be checked against a limit. Without the datatype, both are just characters, and characters sort in the wrong order: as text, “10” comes before “9”.</p>
+
+          <h3>Labels in more than one language</h3>
+
+          <p>A string meant for people can carry a <strong>language tag</strong> after <code>@</code>, so the same thing can be labelled in each language its readers use. The application profile’s own example labels Wales in English and Welsh:</p>
+
+          <div class="table-wrap">
+            <table class="table table--triples">
+              <thead>
+                <tr><th scope="col">Subject</th><th scope="col">Predicate</th><th scope="col">Object</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>ex:W92000004</code></td><td><code>skos:prefLabel</code></td><td><code>"Wales"@en</code></td></tr>
+                <tr><td><code>ex:W92000004</code></td><td><code>skos:prefLabel</code></td><td><code>"Cymru"@cy</code></td></tr>
+                <tr><td><code>ex:W92000004</code></td><td><code>skos:notation</code></td><td><code>"W92000004"</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>The labels carry language tags; the notation carries none. A notation is a code, the same in every language, which is the difference between a notation and a label from Module 1.</p>
+
+          <section class="activity" id="activity-3" property="hasPart" typeof="LearningResource" resource="#activity-3">
+            <span class="activity__label">Activity 3</span>
+            <h3 property="name">Literal or link?</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-3">#activity-3</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>For each of these objects, say whether it’s a literal or a link to another thing. For each literal, say what kind of value it is.</p>
+              <ol>
+                <li><code>"CORBY STW F/E"</code></li>
+                <li><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></li>
+                <li><code><span class="nw">"2025-12-24"</span><wbr><span class="nw">^^xsd:</span><wbr><span class="nw">date</span></code></li>
+                <li><code><span class="nw">unit:</span><wbr><span class="nw">MilliGM-PER-L</span></code></li>
+                <li><code>"Cymru"@cy</code></li>
+              </ol>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <ol>
+                  <li>A literal: a string, the sampling point’s alternative label.</li>
+                  <li>A link, to the sampling point.</li>
+                  <li>A literal: a date.</li>
+                  <li>A link, to the published unit milligrams per litre. A prefixed name is a URI written short, so it’s a link too.</li>
+                  <li>A literal: a string in Welsh.</li>
+                </ol>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="structured">Values with structure</h2>
+
+          <p>The ammoniacal nitrogen result is <code>&lt;0.132</code> mg/l. That short value says three things: there is a result, it’s at most 0.132, and it’s measured in milligrams per litre. The <code>&lt;</code> means the amount was too small to measure more precisely than that.</p>
+
+          <p>The observation states the result twice: once as the text a person reads, and once with its parts separated so a program can work with them.</p>
+
+          <div class="table-wrap">
+            <table class="table table--uris table--triples">
+              <caption class="table__caption">The observation’s result</caption>
+              <thead>
+                <tr><th scope="col">Subject</th><th scope="col">Predicate</th><th scope="col">Object</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code><span class="nw">&lt;…/</span><wbr><span class="nw">observation/</span><wbr><span class="nw">0111&gt;</span></code></td><td><code><span class="nw">sosa:</span><wbr><span class="nw">hasSimpleResult</span></code></td><td><code>"&lt;0.132"</code></td></tr>
+                <tr><td><code><span class="nw">&lt;…/</span><wbr><span class="nw">observation/</span><wbr><span class="nw">0111&gt;</span></code></td><td><code>sosa:hasResult</code></td><td><code>_:result</code></td></tr>
+                <tr><td><code>_:result</code></td><td><code>a</code></td><td><code><span class="nw">qudt:</span><wbr><span class="nw">QuantityValue</span></code></td></tr>
+                <tr><td><code>_:result</code></td><td><code>qudt:upperBound</code></td><td><code><span class="nw">"0.132"</span><wbr><span class="nw">^^xsd:</span><wbr><span class="nw">decimal</span></code></td></tr>
+                <tr><td><code>_:result</code></td><td><code>qudt:hasUnit</code></td><td><code><span class="nw">unit:</span><wbr><span class="nw">MilliGM-PER-L</span></code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>The result is a thing in its own right, with a value and a unit, but it’s only ever reached through its observation. It has no URI of its own. A thing like this is called a <strong>blank node</strong>, and <code>_:result</code> is a label for it that only means something inside this set of triples. In the graph above, it’s the dashed circle.</p>
+
+          <p>Compare <code><span class="nw">AN-CORBY#Geometry</span></code> from Module 2. The location gets a hash URI because people link to it directly. The result goes with its observation, which already has a URI.</p>
+
+          <h2 id="vocabularies">Vocabularies</h2>
+
+          <p>Every predicate on this page comes from a published <strong>vocabulary</strong>: a set of predicates and classes that an organisation has defined, published under its own domain and promised to keep. Reusing them is the same decision as reusing a unit URI in Module 2. When everyone says “preferred label” with <code>skos:prefLabel</code>, everyone’s labels can be found the same way.</p>
+
+          <p>Each vocabulary answers one kind of question.</p>
+
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="table__caption">The vocabularies used for environmental data</caption>
+              <thead>
+                <tr><th scope="col">Vocabulary</th><th scope="col">Prefix</th><th scope="col">Answers</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>SKOS</td><td><code>skos:</code></td><td>What is this called, what is its code, and how do concepts relate?</td></tr>
+                <tr><td>SOSA/SSN</td><td><code>sosa:</code></td><td>What was sampled, what was observed, and what was found?</td></tr>
+                <tr><td>QUDT</td><td><code>qudt:</code> <code>unit:</code></td><td>What quantity, in which unit?</td></tr>
+                <tr><td>GeoSPARQL</td><td><code>geo:</code></td><td>Where is it, and what is it within?</td></tr>
+                <tr><td>DCAT</td><td><code>dcat:</code></td><td>Which datasets exist, and in which catalogue?</td></tr>
+                <tr><td>Dublin Core</td><td><code>dct:</code></td><td>Who published it, and on what terms?</td></tr>
+                <tr><td>RDFS and OWL</td><td><code>rdfs:</code> <code>owl:</code></td><td>Which classes and predicates exist?</td></tr>
+                <tr><td>Defra core</td><td><code>defra-core:</code></td><td>Which kind of this thing is it?</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>SKOS: concepts and their codes</h3>
+
+          <p>SKOS (Simple Knowledge Organization System) describes concepts: the determinands, sampling point types and areas from Module 1. Each concept has a notation and a preferred label, and belongs to a <strong>concept scheme</strong>, the group it comes from. Concepts can be arranged into a hierarchy with <code>skos:broader</code> and <code>skos:narrower</code>.</p>
+
+          <div class="table-wrap">
+            <table class="table table--uris table--triples">
+              <caption class="table__caption">The determinand 0111</caption>
+              <thead>
+                <tr><th scope="col">Subject</th><th scope="col">Predicate</th><th scope="col">Object</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>determinand:0111</code></td><td><code>skos:notation</code></td><td><code>"0111"</code></td></tr>
+                <tr><td><code>determinand:0111</code></td><td><code>skos:prefLabel</code></td><td><code><span class="nw">"Ammoniacal</span> <span class="nw">Nitrogen</span> <span class="nw">as</span> <span class="nw">N"</span></code></td></tr>
+                <tr><td><code>determinand:0111</code></td><td><code>skos:altLabel</code></td><td><code>"Ammonia(N)"</code></td></tr>
+                <tr><td><code>determinand:0111</code></td><td><code>skos:inScheme</code></td><td><code><span class="nw">dataset:</span><wbr><span class="nw">determinands</span></code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>This is the determinand lookup from Module 1, published once as data, where every observation can point at it.</p>
+
+          <h3>SOSA/SSN: sampling and observing</h3>
+
+          <p>SOSA (Sensor, Observation, Sample and Actuator) describes the chain you’ve followed all along. The sampling point is the <strong>feature of interest</strong>, the thing being studied. A <strong>sampling</strong> collects a <strong>sample</strong> from it, and an <strong>observation</strong> measures a property of the sample and records a result.</p>
+
+          <h3>QUDT: quantities and units</h3>
+
+          <p>QUDT (Quantities, Units, Dimensions and Types) describes numbers with units: the <code><span class="nw">qudt:</span><wbr><span class="nw">QuantityValue</span></code> holding the result, its <code>qudt:upperBound</code>, and the unit it’s measured in.</p>
+
+          <h3>GeoSPARQL: places and shapes</h3>
+
+          <p>GeoSPARQL describes where things are. The sampling point has a geometry, a point on the British National Grid, and sits within an area:</p>
+
+          <div class="table-wrap">
+            <table class="table table--uris table--triples">
+              <thead>
+                <tr><th scope="col">Subject</th><th scope="col">Predicate</th><th scope="col">Object</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></td><td><code>geo:hasGeometry</code></td><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY#Geometry&gt;</span></code></td></tr>
+                <tr><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></td><td><code>geo:sfWithin</code></td><td><code>area:M</code></td></tr>
+                <tr><td><code>area:M</code></td><td><code>skos:prefLabel</code></td><td><code><span class="nw">"ANGLIAN</span> <span class="nw">-</span> <span class="nw">LINCS</span> <span class="nw">AND</span> <span class="nw">NORTHANTS"</span></code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>This is the link from Module 2: the sampling point keeps its own URI and points at its area, which can be redrawn. A later module covers GeoSPARQL in depth.</p>
+
+          <h3>DCAT: catalogues and datasets</h3>
+
+          <p>DCAT (Data Catalog Vocabulary) describes what is published. Each service has a <strong>catalogue</strong> that lists its <strong>datasets</strong>. A concept scheme, such as the determinands, is a dataset too, so it’s listed in the catalogue alongside the observations. A dataset of observations declares which concept schemes classify its members:</p>
+
+          <div class="table-wrap">
+            <table class="table table--uris table--triples">
+              <thead>
+                <tr><th scope="col">Subject</th><th scope="col">Predicate</th><th scope="col">Object</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code><span class="nw">dataset:</span><wbr><span class="nw">observations</span></code></td><td><code><span class="nw">dcat:</span><wbr><span class="nw">themeTaxonomy</span></code></td><td><code><span class="nw">dataset:</span><wbr><span class="nw">determinands</span></code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>That one triple tells a program, before it reads a single observation, that observations in this dataset can be filtered by determinand.</p>
+
+          <h3>Dublin Core: who published it, and on what terms</h3>
+
+          <p>Dublin Core provides general-purpose predicates for describing published things, such as <code>dct:title</code>, <code>dct:publisher</code> and <code>dct:license</code>. Every dataset in a catalogue carries them:</p>
+
+          <div class="table-wrap">
+            <table class="table table--uris table--triples">
+              <thead>
+                <tr><th scope="col">Subject</th><th scope="col">Predicate</th><th scope="col">Object</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code><span class="nw">dataset:</span><wbr><span class="nw">observations</span></code></td><td><code>dct:title</code></td><td><code><span class="nw">"Water</span> <span class="nw">quality</span> <span class="nw">observations"@en</span></code></td></tr>
+                <tr><td><code><span class="nw">dataset:</span><wbr><span class="nw">observations</span></code></td><td><code>dct:publisher</code></td><td><code><span class="nw">&lt;https://environment.data.gov.uk/</span><wbr><span class="nw">&gt;</span></code></td></tr>
+                <tr><td><code><span class="nw">dataset:</span><wbr><span class="nw">observations</span></code></td><td><code>dct:license</code></td><td><code><span class="nw">&lt;https://</span><wbr><span class="nw">www.nationalarchives.gov.uk/</span><wbr><span class="nw">doc/</span><wbr><span class="nw">open-government-licence/</span><wbr><span class="nw">version/</span><wbr><span class="nw">3/</span><wbr><span class="nw">&gt;</span></code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>A licence that is a URI can be followed and checked by a program, the same as any other link.</p>
+
+          <h3>RDFS and OWL: when nothing fits</h3>
+
+          <p>Sometimes no published vocabulary has the predicate or class you need. Then you define your own with RDFS and OWL, under a domain you control, giving each one a label and a comment that says when to use it. Defra’s domain model does this for regulatory and water terms, under the prefix <code>defra-core:</code>. Check the vocabularies above first: a predicate someone else already publishes is one every reader already understands. One of Defra’s own predicates, <code><span class="nw">defra-core:</span><wbr><span class="nw">hasClassification</span></code>, is covered in <a href="#classifications">Classifications</a>.</p>
+
+          <section class="activity" id="activity-4" property="hasPart" typeof="LearningResource" resource="#activity-4">
+            <span class="activity__label">Activity 4</span>
+            <h3 property="name">Which vocabulary?</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-4">#activity-4</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>Which vocabulary does each predicate come from, and what question does it answer?</p>
+              <ol>
+                <li><code>skos:notation</code></li>
+                <li><code><span class="nw">sosa:</span><wbr><span class="nw">observedProperty</span></code></li>
+                <li><code>qudt:hasUnit</code></li>
+                <li><code>geo:sfWithin</code></li>
+                <li><code><span class="nw">dcat:</span><wbr><span class="nw">themeTaxonomy</span></code></li>
+                <li><code>dct:license</code></li>
+              </ol>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <ol>
+                  <li>SKOS: what is this thing’s code?</li>
+                  <li>SOSA/SSN: what property did this observation measure?</li>
+                  <li>QUDT: which unit is this value in?</li>
+                  <li>GeoSPARQL: what is this thing within?</li>
+                  <li>DCAT: which concept schemes classify this dataset’s members?</li>
+                  <li>Dublin Core: on what terms can this be used?</li>
+                </ol>
+                <p>The prefix tells you the vocabulary, as long as you know what the prefix stands for.</p>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="classes">Classes and classifications</h2>
+
+          <p>One predicate says what kind of thing something is: <code>rdf:type</code>, usually written as just <code>a</code>. Its object is a <strong>class</strong>, and a thing can belong to more than one:</p>
+
+          <div class="table-wrap">
+            <table class="table table--uris table--triples">
+              <thead>
+                <tr><th scope="col">Subject</th><th scope="col">Predicate</th><th scope="col">Object</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></td><td><code>a</code></td><td><code><span class="nw">sosa:</span><wbr><span class="nw">FeatureOfInterest</span></code></td></tr>
+                <tr><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></td><td><code>a</code></td><td><code>geo:Feature</code></td></tr>
+                <tr><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744&gt;</span></code></td><td><code>a</code></td><td><code>sosa:Sample</code></td></tr>
+                <tr><td><code><span class="nw">&lt;…/</span><wbr><span class="nw">observation/</span><wbr><span class="nw">0111&gt;</span></code></td><td><code>a</code></td><td><code>sosa:Observation</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p><code>AN-CORBY</code> is both a feature of interest, something observed, and a feature, something with a place on a map. Each class brings its own vocabulary’s predicates with it, which is how one sampling point can have SOSA observations and a GeoSPARQL geometry at the same time.</p>
+
+          <h3 id="classifications">Classifications: a finer kind without a new class</h3>
+
+          <p>A class says what something fundamentally is. Often you also need to say which kind of that thing it is. You could make a class for every kind, such as River, Lake and Canal, but then every new kind means changing the vocabulary itself.</p>
+
+          <p>Defra’s domain model keeps the class general and adds a <strong>classification</strong>: a concept from a concept scheme, attached with <code><span class="nw">defra-core:</span><wbr><span class="nw">hasClassification</span></code>. The River Irwell is a water body, and its classification says which kind of water body:</p>
+
+          <div class="table-wrap">
+            <table class="table table--uris table--triples">
+              <thead>
+                <tr><th scope="col">Subject</th><th scope="col">Predicate</th><th scope="col">Object</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>ex:irwell</code></td><td><code>a</code></td><td><code>ex:WaterBody</code></td></tr>
+                <tr><td><code>ex:irwell</code></td><td><code><span class="nw">defra-core:</span><wbr><span class="nw">hasClassification</span></code></td><td><code>ex:river</code></td></tr>
+                <tr><td><code>ex:river</code></td><td><code>a</code></td><td><code>skos:Concept</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>A sampling point is classified the same way, by its sampling point type:</p>
+
+          <div class="table-wrap">
+            <table class="table table--uris table--triples">
+              <thead>
+                <tr><th scope="col">Subject</th><th scope="col">Predicate</th><th scope="col">Object</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></td><td><code><span class="nw">defra-core:</span><wbr><span class="nw">hasClassification</span></code></td><td><code><span class="nw">sampling-point-type:</span><wbr><span class="nw">SA</span></code></td></tr>
+                <tr><td><code><span class="nw">sampling-point-type:</span><wbr><span class="nw">SA</span></code></td><td><code>skos:notation</code></td><td><code>"SA"</code></td></tr>
+                <tr><td><code><span class="nw">sampling-point-type:</span><wbr><span class="nw">SA</span></code></td><td><code>skos:prefLabel</code></td><td><code><span class="nw">"SEWAGE</span> <span class="nw">DISCHARGES</span> <span class="nw">-</span> <span class="nw">FINAL/</span><wbr><span class="nw">TREATED</span> <span class="nw">EFFLUENT</span> <span class="nw">-</span> <span class="nw">WATER</span> <span class="nw">COMPANY"</span></code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>A new kind of sampling point is a new concept in the scheme, which can be added without touching any class. Because each classification is a concept, it has a notation and a label like any other, and a dataset can declare the scheme with <code><span class="nw">dcat:</span><wbr><span class="nw">themeTaxonomy</span></code> so programs know they can filter by it.</p>
+
+          <p>The predicate’s range is what makes it fit. The <strong>range</strong> of a predicate says what its object should be. <code><span class="nw">defra-core:</span><wbr><span class="nw">hasClassification</span></code> has the range <code>skos:Concept</code>, so its object is always a concept with a notation and a label. Dublin Core’s <code>dct:type</code> has the range <code>rdfs:Class</code>, so it suits pointing at a class.</p>
+
+          <section class="quiz quiz--5" id="quiz" property="hasPart" typeof="Quiz" resource="#quiz">
+            <h2 property="name">Check your understanding</h2>
+            <meta property="assesses" content="Triples, graphs, literals and datatypes, blank nodes, and choosing vocabularies">
+            <p>Choose an answer to see whether it’s right. You can change your answer as often as you like.</p>
+
+            <div class="quiz__questions">
+              <fieldset class="fieldset quiz__question" id="q1" property="hasPart" typeof="Question" resource="#q1">
+                <legend class="fieldset__legend"><span class="caption-m">Question 1 of 5</span><span property="text">In the triple <code><span class="nw">&lt;…/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744&gt;</span> <span class="nw">sosa:</span><wbr><span class="nw">isSampleOf</span> <span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code>, which part is the predicate?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q1-a">
+                    <input class="radios__input" id="q1-a" name="q1" type="radio">
+                    <label class="radios__label" for="q1-a" property="text">The sample</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> The sample is the subject: the thing the statement is about.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q1-b">
+                    <input class="radios__input" id="q1-b" name="q1" type="radio">
+                    <label class="radios__label" for="q1-b" property="text"><code>sosa:isSampleOf</code></label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> The predicate is what’s being said about the subject: here, what it’s a sample of.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q1-c">
+                    <input class="radios__input" id="q1-c" name="q1" type="radio">
+                    <label class="radios__label" for="q1-c" property="text">The sampling point</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> The sampling point is the object: the value of the statement.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q2" property="hasPart" typeof="Question" resource="#q2">
+                <legend class="fieldset__legend"><span class="caption-m">Question 2 of 5</span><span property="text">Two publishers each send you triples that mention <code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code>. What happens when you put their triples together?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q2-a">
+                    <input class="radios__input" id="q2-a" name="q2" type="radio">
+                    <label class="radios__label" for="q2-a" property="text">You need a mapping table before they can be combined.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> A mapping table is what keys needed. A shared URI already says the two sources mean the same thing.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q2-b">
+                    <input class="radios__input" id="q2-b" name="q2" type="radio">
+                    <label class="radios__label" for="q2-b" property="text">They join into one graph, meeting at the sampling point.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> A URI that appears in both sets of triples is one thing, so the two graphs connect there.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q2-c">
+                    <input class="radios__input" id="q2-c" name="q2" type="radio">
+                    <label class="radios__label" for="q2-c" property="text">The second publisher’s triples replace the first’s.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> Triples add up. Combining two graphs keeps every statement from both.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q3" property="hasPart" typeof="Question" resource="#q3">
+                <legend class="fieldset__legend"><span class="caption-m">Question 3 of 5</span><span property="text">Why does the sampling’s start time carry the datatype <code>xsd:dateTime</code>?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q3-a">
+                    <input class="radios__input" id="q3-a" name="q3" type="radio">
+                    <label class="radios__label" for="q3-a" property="text">So it displays in a nicer format.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> How it’s displayed is up to whoever shows it. The datatype says what the value is.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q3-b">
+                    <input class="radios__input" id="q3-b" name="q3" type="radio">
+                    <label class="radios__label" for="q3-b" property="text">So programs sort and compare it as a point in time.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> With the datatype, “before”, “after” and “between” work as they should.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q3-c">
+                    <input class="radios__input" id="q3-c" name="q3" type="radio">
+                    <label class="radios__label" for="q3-c" property="text">So it can be translated into other languages.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> That’s what language tags are for, on labels meant for people.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q4" property="hasPart" typeof="Question" resource="#q4">
+                <legend class="fieldset__legend"><span class="caption-m">Question 4 of 5</span><span property="text">The result <code>&lt;0.132</code> mg/l is held in a blank node. Why is that a good fit?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q4-a">
+                    <input class="radios__input" id="q4-a" name="q4" type="radio">
+                    <label class="radios__label" for="q4-a" property="text">It has a value and a unit, and it’s only ever reached through its observation.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> It needs structure, so it’s a thing with properties. It goes everywhere with its observation, which already has a URI.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q4-b">
+                    <input class="radios__input" id="q4-b" name="q4" type="radio">
+                    <label class="radios__label" for="q4-b" property="text">The value is below the limit of detection, so it can’t be identified.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> A result of exactly 0.5 mg/l would be held the same way. The structure decides, not the value.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q4-c">
+                    <input class="radios__input" id="q4-c" name="q4" type="radio">
+                    <label class="radios__label" for="q4-c" property="text">Units can’t be linked to with a URI.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> The unit is a URI: <code><span class="nw">unit:</span><wbr><span class="nw">MilliGM-PER-L</span></code>. It’s the result holding it that has no URI.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q5" property="hasPart" typeof="Question" resource="#q5">
+                <legend class="fieldset__legend"><span class="caption-m">Question 5 of 5</span><span property="text">Which vocabulary would you use to publish the notation and label of a determinand?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q5-a">
+                    <input class="radios__input" id="q5-a" name="q5" type="radio">
+                    <label class="radios__label" for="q5-a" property="text">SOSA/SSN</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> SOSA links an observation to the determinand it measured. Describing the determinand itself is a job for concepts.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q5-b">
+                    <input class="radios__input" id="q5-b" name="q5" type="radio">
+                    <label class="radios__label" for="q5-b" property="text">SKOS</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> A determinand is a concept in a concept scheme, with <code>skos:notation</code> and <code>skos:prefLabel</code>.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q5-c">
+                    <input class="radios__input" id="q5-c" name="q5" type="radio">
+                    <label class="radios__label" for="q5-c" property="text">DCAT</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> DCAT lists the determinands concept scheme as a dataset in the catalogue. The concepts inside it are described with SKOS.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="quiz__score" aria-live="polite">
+              <p>You’ve answered <span class="count-answered"></span> of 5 questions and got <span class="count-correct"></span> right.</p>
+            </div>
+
+            <div class="quiz__complete">
+              <div class="panel">
+                <h2 class="panel__title">Module 3 complete</h2>
+                <p class="panel__body">You answered every question correctly</p>
+              </div>
+            </div>
+          </section>
+
+          <h2 id="summary">Summary</h2>
+
+          <p>In this module you learned that:</p>
+          <ul>
+            <li>a triple is one statement: a subject, a predicate and an object</li>
+            <li>triples that share a URI join into a graph, and graphs from different places combine the same way</li>
+            <li>an object is a link to another thing or a literal, and a literal can carry a datatype or a language tag</li>
+            <li>a value with structure that is only reached through its parent can be a blank node</li>
+            <li>predicates and classes come from published vocabularies, each answering one kind of question</li>
+            <li><code>a</code> says what class a thing belongs to, a thing can belong to several, and <code><span class="nw">defra-core:</span><wbr><span class="nw">hasClassification</span></code> adds a finer kind as a concept</li>
+          </ul>
+
+          <p>Module 4 writes these same triples in the formats you’ll meet: Turtle, N-Triples, RDF/XML, JSON-LD and RDFa, and asks one URI for different formats.</p>
+
+          <nav class="pagination" aria-label="Pagination">
+            <div class="pagination__prev">
+              <a class="pagination__link" href="../authority-and-persistence/" rel="prev">
+                <span class="pagination__label">Previous</span>
+                Module 2: Authority, minting and persistence
+              </a>
+            </div>
+            <div class="pagination__next">
+              <a class="pagination__link" href="../serialisation-and-content-negotiation/" rel="next">
+                <span class="pagination__label">Next</span>
+                Module 4: Serialisation and content negotiation
+              </a>
+            </div>
+          </nav>
+        </div>
+
+        <div class="grid-column-one-third">
+          <aside class="related" role="complementary">
+            <h2>This page is data</h2>
+            <p>The page you’re reading is a set of triples too. Its source says, among other things:</p>
+            <ul>
+              <li>this module has the name “Triples and vocabularies”</li>
+              <li>it is part of the course</li>
+              <li><a href="#q2">#q2</a> has the accepted answer <a href="#q2-b">#q2-b</a></li>
+            </ul>
+            <p>Those statements use the schema.org vocabulary, which describes courses and quizzes. You’ll read them directly in Module 4.</p>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="width-container">
+      <p>Linked Data Bootcamp is built with HTML and CSS.</p>
+      <p>This course is dedicated to the public domain under <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license">CC0 1.0 Universal</a>.</p>
+      <p>Contains public sector information from the Environment Agency, licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>.</p>
+    </div>
+  </footer>
+</body>
+</html>

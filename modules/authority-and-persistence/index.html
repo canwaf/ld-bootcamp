@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 2: Authority, minting and persistence – Linked Data Bootcamp</title>
+  <meta name="description" content="Who is responsible for a URI, how to mint one, and why identifiers should only change when the thing they identify does.">
+  <link rel="stylesheet" href="../../assets/bootcamp.css">
+</head>
+<body vocab="https://schema.org/" prefix="dct: http://purl.org/dc/terms/">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="header">
+    <div class="width-container header__container">
+      <a href="../../" class="header__service">
+        <svg class="header__mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <line x1="5" y1="18" x2="12" y2="6" stroke="currentColor" stroke-width="2"/>
+          <line x1="12" y1="6" x2="19" y2="18" stroke="currentColor" stroke-width="2"/>
+          <line x1="5" y1="18" x2="19" y2="18" stroke="currentColor" stroke-width="2"/>
+          <circle cx="12" cy="6" r="3.5" fill="currentColor"/>
+          <circle cx="5" cy="18" r="3.5" fill="currentColor"/>
+          <circle cx="19" cy="18" r="3.5" fill="currentColor"/>
+        </svg>Linked Data Bootcamp
+      </a>
+    </div>
+  </header>
+
+  <div class="width-container">
+    <div class="phase-banner">
+      <p><strong class="tag">Beta</strong>This is a new course. Quizzes are marked in your browser as you answer.</p>
+    </div>
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../">Learn Linked Data</a></li>
+        <li><a href="../../#contents">Course contents</a></li>
+      </ol>
+    </nav>
+
+    <main class="main-wrapper" id="main-content" about="" typeof="LearningResource">
+      <link property="isPartOf" href="../../">
+      <meta property="position" content="2">
+      <meta property="learningResourceType" content="Module">
+      <meta property="inLanguage" content="en-GB">
+      <meta property="dct:modified" content="2026-10-28">
+      <link property="license dct:license" href="https://creativecommons.org/publicdomain/zero/1.0/">
+
+      <div class="grid-row">
+        <div class="grid-column-two-thirds">
+          <span class="caption-l">Module 2 of 5</span>
+          <h1 property="name dct:title">Authority, minting and persistence</h1>
+
+          <p class="body-l" property="description">Who is responsible for a URI, how to mint one, and why identifiers should only change when the thing they identify does.</p>
+
+          <nav class="contents-list" aria-label="Contents">
+            <h2 class="contents-list__title">Contents</h2>
+            <ol>
+              <li><a href="#outcomes">What you’ll learn</a></li>
+              <li><a href="#authority">Who a URI belongs to</a></li>
+              <li><a href="#minting">Minting a URI</a></li>
+              <li><a href="#readable">URIs people can read</a></li>
+              <li><a href="#fragile">What makes a URI fragile</a></li>
+              <li><a href="#prefixes">Prefixes</a></li>
+              <li><a href="#addressability">Naming the parts of a thing</a></li>
+              <li><a href="#persistence">Cool URIs don’t change</a></li>
+              <li><a href="#quiz">Check your understanding</a></li>
+              <li><a href="#summary">Summary</a></li>
+            </ol>
+          </nav>
+
+          <h2 id="outcomes">What you’ll learn</h2>
+
+          <p>By the end of this module you’ll be able to:</p>
+          <ul>
+            <li property="teaches">decide which organisation should mint the URI for a thing</li>
+            <li property="teaches">choose between reusing an existing URI and minting a new one</li>
+            <li property="teaches">design a URI pattern built from stable facts about the thing</li>
+            <li property="teaches">shorten URIs with prefixes, and read prefixed names back</li>
+            <li property="teaches">name the parts of a thing with nested paths and hash URIs</li>
+            <li property="teaches">recognise which changes should leave a URI alone</li>
+          </ul>
+
+          <div class="inset-text">
+            <p>The Environment Agency publishes <code>AN-CORBY</code> and its samples and observations, and QUDT publishes the unit of measure in <a href="#minting">Minting a URI</a>. URIs with a domain ending <code>.example</code> are made up for this course: that ending is reserved for examples and documentation.</p>
+          </div>
+
+          <h2 id="authority">Who a URI belongs to</h2>
+
+          <p>In Module 1 the domain in a URI told you who was responsible for it. That responsibility comes from owning the domain. An organisation registers a domain such as <code>environment.data.gov.uk</code>, and from then on it alone decides what the addresses under it mean.</p>
+
+          <p>Anyone can write any URI into their own data. Only the owner of the domain can make it work: answer when someone looks it up, and say what it identifies. That is what <strong>authority</strong> means for a URI.</p>
+
+          <p>So the right place for a URI is the domain of the organisation responsible for the thing. The Environment Agency is responsible for the sampling point <code>AN-CORBY</code>, so its URI lives under the Environment Agency’s domain:</p>
+
+          <pre class="pre--wrap"><code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY</span></code></pre>
+
+          <p>A council that runs an air quality sensor is responsible for that sensor, so its URI belongs under the council’s domain, even though the data is environmental too:</p>
+
+          <pre class="pre--wrap"><code><span class="nw">https://council.example/</span><wbr><span class="nw">air-quality/</span><wbr><span class="nw">sensor/</span><wbr><span class="nw">AQ-017</span></code></pre>
+
+          <p>Putting the sensor under <code>environment.data.gov.uk</code> would hand the job of keeping it working to an organisation that has no say over the sensor.</p>
+
+          <h2 id="minting">Minting a URI</h2>
+
+          <p>Creating a new URI for a thing is called <strong>minting</strong> it. Before you mint one, check whether the thing already has a URI from the organisation responsible for it.</p>
+
+          <h3>Mint when you are responsible</h3>
+
+          <p>When the thing is yours, mint its URI from the key that its owners already use. The sampling point’s notation <code>AN-CORBY</code> is what the Environment Agency, which monitors it, already calls it, so it goes into the URI. Samples and observations follow the same rule: sample <code>2119744</code> keeps its number, and the observation keeps its determinand code, <code>0111</code>.</p>
+
+          <p>Databases usually give each row a number of their own as well. That number belongs to the database: it identifies a row in one table, in one system. It stays inside the database.</p>
+
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="table__caption">Sampling points, as stored
+                <span class="table__caption-note">The row number is made up for this course.</span>
+              </caption>
+              <thead>
+                <tr><th scope="col">Row</th><th scope="col">Notation</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>48213</td><td><code>AN-CORBY</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Reuse when someone else is responsible</h3>
+
+          <p>Plenty of what you describe belongs to someone else. Units of measure are a good example: they’re published as concepts with their own URIs, and a result in milligrams per litre can point at the published unit:</p>
+
+          <pre class="pre--wrap"><code><span class="nw">http://qudt.org/</span><wbr><span class="nw">vocab/</span><wbr><span class="nw">unit/</span><wbr><span class="nw">MilliGM-PER-L</span></code></pre>
+
+          <p>Every dataset that reuses that URI agrees, exactly, on what <em>mg/l</em> means, and they all join on it. The same goes for anything another organisation runs. If your data mentions a council’s air quality sensor, it points at the council’s URI for that sensor.</p>
+
+          <section class="activity" id="activity-1" property="hasPart" typeof="LearningResource" resource="#activity-1">
+            <span class="activity__label">Activity 1</span>
+            <h3 property="name">Who mints it?</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-1">#activity-1</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>You publish water quality data for the Environment Agency. For each of these, decide whether you mint a URI or reuse one, and under which domain it lives.</p>
+              <ol>
+                <li>The sampling point <code>AN-CORBY</code></li>
+                <li>Sample <code>2119744</code>, taken at <code>AN-CORBY</code></li>
+                <li>The unit milligrams per litre</li>
+                <li>A council’s air quality sensor next to the works</li>
+              </ol>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <ol>
+                  <li>Mint it under your own domain, from the notation <code>AN-CORBY</code>.</li>
+                  <li>Mint it under your own domain too, built on the sampling point’s URI. The sample is your record.</li>
+                  <li>Reuse the published unit URI. Units are shared by everyone.</li>
+                  <li>Reuse the council’s URI, under the council’s domain. The sensor is theirs.</li>
+                </ol>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="readable">URIs people can read</h2>
+
+          <p>A good URI names the thing directly, in words a person recognises:</p>
+
+          <pre class="pre--wrap"><code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY</span></code></pre>
+
+          <p>Someone reading it can tell what it identifies before they look it up. And the path works as a way round the service. Take the determinand off the end of an observation’s URI and you have its sample. Take the sample off and you have the sampling point it came from:</p>
+
+          <pre><code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744/</span><wbr><span class="nw">observation/</span><wbr><span class="nw">0111</span>
+<span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744</span>
+<span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY</span></code></pre>
+
+          <p>A person can find their way round by editing the address, the same way they would on any website. The URI is the interface.</p>
+
+          <p>A good pattern is built only from stable facts about the thing:</p>
+          <ul>
+            <li>a domain the responsible organisation intends to keep</li>
+            <li>the kind of thing, in plain words, such as <code>sampling-point</code></li>
+            <li>the key the thing’s owners already use, such as <code>AN-CORBY</code></li>
+          </ul>
+
+          <h3 id="fragile">What makes a URI fragile</h3>
+
+          <p>A URI is fragile when it contains something that changes on its own schedule, faster than the thing it identifies. Watch for:</p>
+          <ul>
+            <li>software versions and product names, such as <code>api/v2</code>, which change whenever the software is upgraded or replaced</li>
+            <li>system names, such as a database or laboratory system in the domain, which go when the system is retired</li>
+            <li>organisation structure, such as a team or department name, which changes with every reorganisation</li>
+            <li>database row numbers, which can be renumbered in a migration and mean nothing outside the database</li>
+            <li>plumbing words, such as <code>/api/</code> or <code>/id/</code>, which tell a person nothing about the thing and make the URI look less useful and more imposing than it is</li>
+          </ul>
+
+          <p>The first four will change while the sampling point stays exactly where it is, and each change breaks the URI for everyone who joined on it. Plumbing words make the URI harder to use from the day it’s published.</p>
+
+          <section class="activity" id="activity-2" property="hasPart" typeof="LearningResource" resource="#activity-2">
+            <span class="activity__label">Activity 2</span>
+            <h3 property="name">Spot the fragile parts</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-2">#activity-2</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>Each of these URIs identifies the same sampling point. Using the list above, find the fragile part of each one.</p>
+              <ol>
+                <li><code><span class="nw">https://data.example/</span><wbr><span class="nw">api/</span><wbr><span class="nw">v2/</span><wbr><span class="nw">sampling-point?row=48213</span></code></li>
+                <li><code><span class="nw">https://lims-prod.example/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY</span></code></li>
+                <li><code><span class="nw">https://data.example/</span><wbr><span class="nw">anglian-region-team/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY</span></code></li>
+                <li><code><span class="nw">https://data.example/</span><wbr><span class="nw">id/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY</span></code></li>
+              </ol>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <ol>
+                  <li><code>api/v2</code> ties the URI to one version of one piece of software, and <code>row=48213</code> is a database number that means nothing outside that database. The next version or the next migration breaks it.</li>
+                  <li><code>lims-prod</code> names a system. When the system is replaced, the domain goes with it.</li>
+                  <li><code>anglian-region-team</code> records an organisation chart. Teams are renamed and merged far more often than sampling points move.</li>
+                  <li><code>id</code> tells a person nothing about the thing. Like <code>api</code>, it’s plumbing on show, and it makes the URI look less useful and more imposing than it is.</li>
+                </ol>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="prefixes">Prefixes</h2>
+
+          <p>Full URIs are long to read and easy to mistype. A <strong>prefix</strong> is a short name that stands for the start of a URI, so the rest can be written after a colon.</p>
+
+          <dl class="summary-list summary-list--narrow-key">
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Prefix</dt>
+              <dd class="summary-list__value"><code>sampling-point:</code></dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Stands for</dt>
+              <dd class="summary-list__value"><code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span></code></dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Prefixed name</dt>
+              <dd class="summary-list__value"><code>sampling-point:AN-CORBY</code></dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Full URI</dt>
+              <dd class="summary-list__value"><code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY</span></code></dd>
+            </div>
+          </dl>
+
+          <p>A prefix is only shorthand. The data still means the full URI, and a prefix only makes sense alongside the line that declares what it stands for. This page uses one: its source declares <code>dct:</code> as shorthand for the Dublin Core terms, then uses <code>dct:modified</code> to say when the page last changed.</p>
+
+          <section class="activity" id="activity-3" property="hasPart" typeof="LearningResource" resource="#activity-3">
+            <span class="activity__label">Activity 3</span>
+            <h3 property="name">Shorten and expand</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-3">#activity-3</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>The prefix <code>corby-sample:</code> stands for <code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">sample/</span></code>.</p>
+              <ol>
+                <li>Write the prefixed name for <code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744</span></code>.</li>
+                <li>Write the full URI for <code>corby-sample:1959114</code>.</li>
+              </ol>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <ol>
+                  <li><code>corby-sample:2119744</code></li>
+                  <li><code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">1959114</span></code></li>
+                </ol>
+                <p>Swap the prefix for the URI it stands for, or the other way round. Nothing else changes.</p>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="addressability">Naming the parts of a thing</h2>
+
+          <p>Some things belong to something else. A sample belongs to the sampling point it was taken at, and an observation belongs to the sample it was made on. Giving a part a name built from its parent’s name is a useful idea, and there are two common ways to write it.</p>
+
+          <h3>Nested paths, for parts with one parent</h3>
+
+          <p>Water quality nests each part’s URI under its parent’s:</p>
+
+          <pre class="pre--wrap"><code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744/</span><wbr><span class="nw">observation/</span><wbr><span class="nw">0111</span></code></pre>
+
+          <p>The nesting is a promise about cardinality, meaning how many of one thing go with another:</p>
+          <ul>
+            <li>every sample is taken at exactly one sampling point</li>
+            <li>every observation is made on exactly one sample</li>
+            <li>a sample has one observation per determinand, so the determinand code is enough to pick out the observation</li>
+          </ul>
+
+          <p>Because the promise holds, the URI states where the part belongs, and walking back up the path takes you to its parent. Nest only where the parent can never change. <code>AN-CORBY</code> sits in the area <em>Anglian – Lincs and Northants</em>, and areas can be redrawn, so the sampling point links to its area and keeps a URI of its own.</p>
+
+          <h3>Hash URIs, for parts that travel with their parent</h3>
+
+          <p>The web has always named parts of a page with a <code>#</code> on the end of the address. A <strong>hash URI</strong> uses the same idea to name a part of a resource that is always delivered together with it.</p>
+
+          <p>When you ask for <code>AN-CORBY</code>, you also get its location: a point on the British National Grid. The location only ever comes with the sampling point, so it’s named with a hash URI on the end of the sampling point’s:</p>
+
+          <pre class="pre--wrap"><code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY#Geometry</span></code></pre>
+
+          <p>This course does the same for its own activities: <a href="#activity-3">Shorten and expand</a> has the URI <code>#activity-3</code> on the end of this page’s address, so a teacher can link straight to it.</p>
+
+          <p>Nested paths and hash URIs are a matter of style. The idea underneath is the same: a part gets a name that tells you what it belongs to.</p>
+
+          <h2 id="persistence">Cool URIs don’t change</h2>
+
+          <p>“Cool URIs don’t change” is the title of a short note Tim Berners-Lee wrote in 1998. The argument is about discipline: change an identifier only when the thing it identifies has changed.</p>
+
+          <p>Country codes show how this works. Under the ISO 3166 standard, <code>GB</code> has identified the United Kingdom since the standard was first published. Passport systems, shipping forms, postal services and countless datasets depend on it, so it stays put. Changing it would break all of them at once, for no gain.</p>
+
+          <p>URIs deserve the same treatment. Once a URI is published, other people’s data starts joining on it, and you can’t see who they are. Every change breaks joins you don’t know about.</p>
+
+          <p>So a URI should outlive the things around it:</p>
+          <ul>
+            <li>a renamed team or a reorganisation</li>
+            <li>a new database or a data migration</li>
+            <li>a rebuilt website or a new software platform</li>
+            <li>a record being deleted and reloaded with corrected details</li>
+          </ul>
+
+          <p>In each case the sampling point is exactly where it was, so its URI stays the same. When a sampling point’s record is replaced with a fresh one, its URI carries over to the new record, and everything that joined on it keeps working.</p>
+
+          <p>A URI changes when the thing changes. If effluent is collected from a different outfall, that’s a different place: it gets a new notation and a new URI. The old URI keeps describing the old place, so the results recorded against it still mean what they meant.</p>
+
+          <section class="activity" id="activity-4" property="hasPart" typeof="LearningResource" resource="#activity-4">
+            <span class="activity__label">Activity 4</span>
+            <h3 property="name">What changes the URI?</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-4">#activity-4</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>Over five years, all of these happen to the sampling point <code>AN-CORBY</code>. Which of them should give it a new URI?</p>
+              <ol>
+                <li>The team that runs it is renamed.</li>
+                <li>Its data moves from one database to another.</li>
+                <li>It’s moved into a different sub-area after a boundary review.</li>
+                <li>The website that publishes it is rebuilt.</li>
+                <li>The works is rebuilt, and the final effluent now leaves through a new outfall 2 kilometres away.</li>
+              </ol>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <p>Only the last one. A new outfall means collecting effluent from a different place, so it’s a new sampling point with a new URI. The old URI keeps describing the old outfall.</p>
+                <p>The sub-area change alters what is said about the sampling point. It’s still the same place, so it keeps its URI and its description is updated.</p>
+              </div>
+            </details>
+          </section>
+
+          <section class="quiz quiz--5" id="quiz" property="hasPart" typeof="Quiz" resource="#quiz">
+            <h2 property="name">Check your understanding</h2>
+            <meta property="assesses" content="Authority over URIs, reusing and minting URIs, URI pattern design, prefixes, nested paths and hash URIs, and persistence">
+            <p>Choose an answer to see whether it’s right. You can change your answer as often as you like.</p>
+
+            <div class="quiz__questions">
+              <fieldset class="fieldset quiz__question" id="q1" property="hasPart" typeof="Question" resource="#q1">
+                <legend class="fieldset__legend"><span class="caption-m">Question 1 of 5</span><span property="text">A council wants to publish URIs for its air quality sensors. Where should they live?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q1-a">
+                    <input class="radios__input" id="q1-a" name="q1" type="radio">
+                    <label class="radios__label" for="q1-a" property="text">Under <code>environment.data.gov.uk</code>, because it’s environmental data.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> The subject of the data is environmental, but the council runs the sensors. The URI belongs with whoever is responsible for the thing.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q1-b">
+                    <input class="radios__input" id="q1-b" name="q1" type="radio">
+                    <label class="radios__label" for="q1-b" property="text">Under the council’s own domain.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> The council is responsible for the sensors, and only the owner of a domain can keep its URIs working.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q1-c">
+                    <input class="radios__input" id="q1-c" name="q1" type="radio">
+                    <label class="radios__label" for="q1-c" property="text">Under whichever domain is cheapest to register.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> A domain bought for convenience is easy to let lapse, and every URI under it goes with it.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q2" property="hasPart" typeof="Question" resource="#q2">
+                <legend class="fieldset__legend"><span class="caption-m">Question 2 of 5</span><span property="text">A sampling point is stored as row <code>48213</code> with the notation <code>AN-CORBY</code>. Which should go into its URI?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q2-a">
+                    <input class="radios__input" id="q2-a" name="q2" type="radio">
+                    <label class="radios__label" for="q2-a" property="text">The row number, because it’s guaranteed to be unique.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> It’s unique inside one table in one database. Migrate the data and the number can change; show it to a person and it means nothing.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q2-b">
+                    <input class="radios__input" id="q2-b" name="q2" type="radio">
+                    <label class="radios__label" for="q2-b" property="text">The notation, because it’s the key the sampling point’s owners use.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> The notation belongs to the thing, so it outlives any database that stores it, and people already recognise it.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q2-c">
+                    <input class="radios__input" id="q2-c" name="q2" type="radio">
+                    <label class="radios__label" for="q2-c" property="text">Both, so either can be used to find it.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> Including the row number ties the URI to the database, so the whole URI breaks when the row number changes.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q3" property="hasPart" typeof="Question" resource="#q3">
+                <legend class="fieldset__legend"><span class="caption-m">Question 3 of 5</span><span property="text">Which of these URIs is built only from stable facts about the sampling point?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q3-a">
+                    <input class="radios__input" id="q3-a" name="q3" type="radio">
+                    <label class="radios__label" for="q3-a" property="text"><code><span class="nw">https://data.example/</span><wbr><span class="nw">api/</span><wbr><span class="nw">v2/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY</span></code></label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> <code>api/v2</code> names a version of some software. Version 3 will want a URI of its own.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q3-b">
+                    <input class="radios__input" id="q3-b" name="q3" type="radio">
+                    <label class="radios__label" for="q3-b" property="text"><code><span class="nw">https://data.example/</span><wbr><span class="nw">anglian-region-team/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY</span></code></label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> The team name records who runs it this year. The next reorganisation changes it.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q3-c">
+                    <input class="radios__input" id="q3-c" name="q3" type="radio">
+                    <label class="radios__label" for="q3-c" property="text"><code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY</span></code></label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> A domain the organisation keeps, the kind of thing, and the owner’s own key. All three stay true for as long as the sampling point exists.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q4" property="hasPart" typeof="Question" resource="#q4">
+                <legend class="fieldset__legend"><span class="caption-m">Question 4 of 5</span><span property="text">During a data migration, a sampling point’s record is deleted and reloaded with corrected details. What happens to its URI?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q4-a">
+                    <input class="radios__input" id="q4-a" name="q4" type="radio">
+                    <label class="radios__label" for="q4-a" property="text">It stays the same, and now describes the corrected record.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> The sampling point is the same place it always was. The record changed; the thing it describes did not.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q4-b">
+                    <input class="radios__input" id="q4-b" name="q4" type="radio">
+                    <label class="radios__label" for="q4-b" property="text">It gets a new URI, with a redirect from the old one.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> A redirect softens the break, but every dataset that stored the old URI now holds a second name for the same thing.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q4-c">
+                    <input class="radios__input" id="q4-c" name="q4" type="radio">
+                    <label class="radios__label" for="q4-c" property="text">It gets a version number added to the end.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> A version number identifies a version of the record. People joining on the sampling point want the sampling point.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q5" property="hasPart" typeof="Question" resource="#q5">
+                <legend class="fieldset__legend"><span class="caption-m">Question 5 of 5</span><span property="text">Why can the URI for an observation in sample <code>2119744</code> end in <code>/observation/0111</code>?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q5-a">
+                    <input class="radios__input" id="q5-a" name="q5" type="radio">
+                    <label class="radios__label" for="q5-a" property="text">Because <code>0111</code> is the observation’s row number in the database.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> <code>0111</code> is the determinand code for ammoniacal nitrogen as N. Row numbers stay inside the database.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q5-b">
+                    <input class="radios__input" id="q5-b" name="q5" type="radio">
+                    <label class="radios__label" for="q5-b" property="text">Because a sample has one observation per determinand, so the determinand code picks it out.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> The nested path promises one sample per observation and one observation per determinand, so the code is enough.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q5-c">
+                    <input class="radios__input" id="q5-c" name="q5" type="radio">
+                    <label class="radios__label" for="q5-c" property="text">Because <code>0111</code> is the code for the unit the result is measured in.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> The unit, milligrams per litre, is part of the observation’s result. <code>0111</code> identifies what was measured: ammoniacal nitrogen as N.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="quiz__score" aria-live="polite">
+              <p>You’ve answered <span class="count-answered"></span> of 5 questions and got <span class="count-correct"></span> right.</p>
+            </div>
+
+            <div class="quiz__complete">
+              <div class="panel">
+                <h2 class="panel__title">Module 2 complete</h2>
+                <p class="panel__body">You answered every question correctly</p>
+              </div>
+            </div>
+          </section>
+
+          <h2 id="summary">Summary</h2>
+
+          <p>In this module you learned that:</p>
+          <ul>
+            <li>authority over a URI comes from owning its domain, so a URI belongs under the domain of whoever is responsible for the thing</li>
+            <li>you reuse a URI when someone else is responsible for the thing, and mint one when you are</li>
+            <li>a good URI pattern uses a lasting domain, the kind of thing in plain words, and the key its owners already use</li>
+            <li>a prefix is shorthand for the start of a URI, and the data always means the full URI</li>
+            <li>a part with exactly one parent can be named with a nested path, and a part delivered with its parent with a hash URI</li>
+            <li>a URI changes only when the thing it identifies changes, just as <code>GB</code> has stayed <code>GB</code></li>
+          </ul>
+
+          <p>Module 3 starts making statements with these URIs: what a sampling point is, which samples were taken there, and what was observed in them.</p>
+
+          <nav class="pagination" aria-label="Pagination">
+            <div class="pagination__prev">
+              <a class="pagination__link" href="../keys-to-uris/" rel="prev">
+                <span class="pagination__label">Previous</span>
+                Module 1: From keys to URIs
+              </a>
+            </div>
+            <div class="pagination__next">
+              <a class="pagination__link" href="../triples-and-vocabularies/" rel="next">
+                <span class="pagination__label">Next</span>
+                Module 3: Triples and vocabularies
+              </a>
+            </div>
+          </nav>
+        </div>
+
+        <div class="grid-column-one-third">
+          <aside class="related" role="complementary">
+            <h2>This page is data</h2>
+            <p>The source of this page declares the prefix <code>dct:</code> and uses it in <code>dct:modified</code> and <code>dct:title</code>, exactly as described in <a href="#prefixes">Prefixes</a>.</p>
+            <p>Each activity and quiz question has a hash URI, such as <a href="#activity-4">#activity-4</a>.</p>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="width-container">
+      <p>Linked Data Bootcamp is built with HTML and CSS.</p>
+      <p>This course is dedicated to the public domain under <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license">CC0 1.0 Universal</a>.</p>
+      <p>Contains public sector information from the Environment Agency, licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>.</p>
+    </div>
+  </footer>
+</body>
+</html>

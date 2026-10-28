@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 4: Serialisation and content negotiation – Linked Data Bootcamp</title>
+  <meta name="description" content="One graph written as Turtle, N-Triples, RDF/XML, JSON-LD and RDFa, and one URI serving different formats on request.">
+  <link rel="stylesheet" href="../../assets/bootcamp.css">
+</head>
+<body vocab="https://schema.org/" prefix="dct: http://purl.org/dc/terms/">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="header">
+    <div class="width-container header__container">
+      <a href="../../" class="header__service">
+        <svg class="header__mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <line x1="5" y1="18" x2="12" y2="6" stroke="currentColor" stroke-width="2"/>
+          <line x1="12" y1="6" x2="19" y2="18" stroke="currentColor" stroke-width="2"/>
+          <line x1="5" y1="18" x2="19" y2="18" stroke="currentColor" stroke-width="2"/>
+          <circle cx="12" cy="6" r="3.5" fill="currentColor"/>
+          <circle cx="5" cy="18" r="3.5" fill="currentColor"/>
+          <circle cx="19" cy="18" r="3.5" fill="currentColor"/>
+        </svg>Linked Data Bootcamp
+      </a>
+    </div>
+  </header>
+
+  <div class="width-container">
+    <div class="phase-banner">
+      <p><strong class="tag">Beta</strong>This is a new course. Quizzes are marked in your browser as you answer.</p>
+    </div>
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../">Learn Linked Data</a></li>
+        <li><a href="../../#contents">Course contents</a></li>
+      </ol>
+    </nav>
+
+    <main class="main-wrapper" id="main-content" about="" typeof="LearningResource">
+      <link property="isPartOf" href="../../">
+      <meta property="position" content="4">
+      <meta property="learningResourceType" content="Module">
+      <meta property="inLanguage" content="en-GB">
+      <meta property="dct:modified" content="2026-10-28">
+      <link property="license dct:license" href="https://creativecommons.org/publicdomain/zero/1.0/">
+
+      <div class="grid-row">
+        <div class="grid-column-two-thirds">
+          <span class="caption-l">Module 4 of 5</span>
+          <h1 property="name dct:title">Serialisation and content negotiation</h1>
+
+          <p class="body-l" property="description">One graph written as Turtle, N-Triples, RDF/XML, JSON-LD and RDFa, and one URI serving different formats on request.</p>
+
+          <nav class="contents-list" aria-label="Contents">
+            <h2 class="contents-list__title">Contents</h2>
+            <ol>
+              <li><a href="#outcomes">What you’ll learn</a></li>
+              <li><a href="#one-graph">One graph, many formats</a></li>
+              <li><a href="#turtle">Turtle</a></li>
+              <li><a href="#n-triples">N-Triples</a></li>
+              <li><a href="#rdf-xml">RDF/XML</a></li>
+              <li><a href="#json-ld">JSON-LD</a></li>
+              <li><a href="#rdfa">RDFa</a></li>
+              <li><a href="#content-negotiation">Content negotiation</a></li>
+              <li><a href="#quiz">Check your understanding</a></li>
+              <li><a href="#summary">Summary</a></li>
+            </ol>
+          </nav>
+
+          <h2 id="outcomes">What you’ll learn</h2>
+
+          <p>By the end of this module you’ll be able to:</p>
+          <ul>
+            <li property="teaches">read and write Turtle</li>
+            <li property="teaches">recognise N-Triples, RDF/XML, JSON-LD and RDFa, and convert between them</li>
+            <li property="teaches">explain how a JSON-LD context turns JSON into triples</li>
+            <li property="teaches">ask one URI for different formats with the <code>Accept</code> header</li>
+            <li property="teaches">read the response headers that say what came back</li>
+          </ul>
+
+          <p>You’ll need a terminal with <code>curl</code> for the last section, and Python with the <code>rdflib</code> package for one activity.</p>
+
+          <h2 id="one-graph">One graph, many formats</h2>
+
+          <p>In Module 3 you wrote triples as rows in a table. The triples are the data; the table was one way to write them down. Writing a graph down as text is called <strong>serialising</strong> it, and the result is a <strong>serialisation</strong>.</p>
+
+          <p>There are several serialisations of RDF, each suited to a different job. They all carry the same triples, so a graph can be written in one and read back from another with nothing lost. This module writes one small graph in each: the observation of ammoniacal nitrogen in sample <code>2119744</code>, the sample, and the sampling point it came from.</p>
+
+          <h2 id="turtle">Turtle</h2>
+
+          <p><strong>Turtle</strong> is the serialisation written for people. It’s the one you’ll read and write most often, and the tables in Module 3 were already close to it.</p>
+
+          <h3>Start with one triple</h3>
+
+          <p>A triple in Turtle is the subject, the predicate and the object, separated by spaces and ended with a full stop. URIs go in angle brackets and strings go in double quotes:</p>
+
+          <pre><code>&lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY&gt; &lt;http://www.w3.org/2004/02/skos/core#prefLabel&gt; "CORBY STW FINAL EFFLUENT" .</code></pre>
+
+          <p>That line is complete and correct, but long. The rest of Turtle is shorthand for writing lines like it.</p>
+
+          <h3>Prefixes and a base</h3>
+
+          <p>A <code>@prefix</code> line declares a prefix, as in Module 2. A <code>@base</code> line sets the address that relative URIs are resolved against, as with the tables in Module 3. Both end with a full stop:</p>
+
+          <pre><code>@base &lt;https://environment.data.gov.uk/water-quality/&gt; .
+@prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+
+&lt;sampling-point/AN-CORBY&gt; skos:prefLabel "CORBY STW FINAL EFFLUENT" .</code></pre>
+
+          <p>This is the same triple as before. <code>skos:prefLabel</code> expands to the full predicate URI, and <code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code> is resolved against the base.</p>
+
+          <h3>Several statements about one subject</h3>
+
+          <p>Four triples about the same subject repeat it four times:</p>
+
+          <pre><code>&lt;sampling-point/AN-CORBY&gt; a sosa:FeatureOfInterest .
+&lt;sampling-point/AN-CORBY&gt; a geo:Feature .
+&lt;sampling-point/AN-CORBY&gt; skos:notation "AN-CORBY" .
+&lt;sampling-point/AN-CORBY&gt; skos:prefLabel "CORBY STW FINAL EFFLUENT" .</code></pre>
+
+          <p>Turtle lets you write the subject once. A semicolon <code>;</code> means “same subject, next predicate”, and a comma <code>,</code> means “same subject and predicate, next object”. <code>a</code> is short for <code>rdf:type</code>:</p>
+
+          <pre><code>&lt;sampling-point/AN-CORBY&gt;
+    a sosa:FeatureOfInterest, geo:Feature ;
+    skos:notation "AN-CORBY" ;
+    skos:prefLabel "CORBY STW FINAL EFFLUENT" .</code></pre>
+
+          <p>Both versions hold exactly the same four triples. The full stop still ends the statement.</p>
+
+          <h3>Literals</h3>
+
+          <p>A literal with a datatype has <code>^^</code> and the datatype after the closing quote. A string in a particular language has <code>@</code> and a language tag:</p>
+
+          <pre><code>&lt;sampling-point/AN-CORBY/sampling/2119744&gt;
+    sosa:startTime "2025-11-15T08:43:00"^^xsd:dateTime ;
+    sosa:resultTime "2025-12-24"^^xsd:date .
+
+ex:W92000004 skos:prefLabel "Wales"@en, "Cymru"@cy .</code></pre>
+
+          <p>Numbers can be written without quotes. In Turtle, <code>0.132</code> on its own is a decimal, the same as <code>"0.132"^^xsd:decimal</code>.</p>
+
+          <h3>Blank nodes</h3>
+
+          <p>A blank node can be written inside square brackets, as part of the statement that points at it. Everything between <code>[</code> and <code>]</code> is about the blank node:</p>
+
+          <pre><code>&lt;sampling-point/AN-CORBY/sample/2119744/observation/0111&gt;
+    sosa:hasResult [
+        a qudt:QuantityValue ;
+        qudt:upperBound 0.132 ;
+        qudt:hasUnit unit:MilliGM-PER-L
+    ] .</code></pre>
+
+          <p>The same blank node can also be given a label beginning <code>_:</code> and described separately. Both forms hold the same four triples:</p>
+
+          <pre><code>&lt;sampling-point/AN-CORBY/sample/2119744/observation/0111&gt;
+    sosa:hasResult _:result .
+
+_:result
+    a qudt:QuantityValue ;
+    qudt:upperBound 0.132 ;
+    qudt:hasUnit unit:MilliGM-PER-L .</code></pre>
+
+          <h3>The whole graph</h3>
+
+          <p>Put together, with a comment line starting <code>#</code>, here is everything Module 3 said about <code>AN-CORBY</code>, its sample, its sampling and its observation, as one Turtle document:</p>
+
+          <pre><code># The sampling point AN-CORBY, one sample, and one observation
+@base &lt;https://environment.data.gov.uk/water-quality/&gt; .
+@prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+@prefix sosa: &lt;http://www.w3.org/ns/sosa/&gt; .
+@prefix qudt: &lt;http://qudt.org/schema/qudt/&gt; .
+@prefix unit: &lt;http://qudt.org/vocab/unit/&gt; .
+@prefix geo: &lt;http://www.opengis.net/ont/geosparql#&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+@prefix defra-core: &lt;http://environment.data.gov.uk/ontology/core/&gt; .
+@prefix determinand: &lt;https://data.example/determinands/Concept/&gt; .
+@prefix sampling-point-type: &lt;https://data.example/sampling-point-types/Concept/&gt; .
+@prefix area: &lt;https://data.example/areas/Concept/&gt; .
+
+&lt;sampling-point/AN-CORBY&gt;
+    a sosa:FeatureOfInterest, geo:Feature ;
+    skos:notation "AN-CORBY" ;
+    skos:prefLabel "CORBY STW FINAL EFFLUENT" ;
+    skos:altLabel "CORBY STW F/E" ;
+    defra-core:hasClassification sampling-point-type:SA ;
+    geo:sfWithin area:M ;
+    geo:hasGeometry &lt;sampling-point/AN-CORBY#Geometry&gt; .
+
+&lt;sampling-point/AN-CORBY/sample/2119744&gt;
+    a sosa:Sample ;
+    sosa:isSampleOf &lt;sampling-point/AN-CORBY&gt; ;
+    sosa:isResultOf &lt;sampling-point/AN-CORBY/sampling/2119744&gt; .
+
+&lt;sampling-point/AN-CORBY/sampling/2119744&gt;
+    a sosa:Sampling ;
+    sosa:hasFeatureOfInterest &lt;sampling-point/AN-CORBY&gt; ;
+    sosa:startTime "2025-11-15T08:43:00"^^xsd:dateTime ;
+    sosa:resultTime "2025-12-24"^^xsd:date ;
+    sosa:hasResult &lt;sampling-point/AN-CORBY/sample/2119744&gt; .
+
+&lt;sampling-point/AN-CORBY/sample/2119744/observation/0111&gt;
+    a sosa:Observation ;
+    sosa:hasSample &lt;sampling-point/AN-CORBY/sample/2119744&gt; ;
+    sosa:observedProperty determinand:0111 ;
+    sosa:phenomenonTime "2025-11-15T08:43:00"^^xsd:dateTime ;
+    sosa:hasSimpleResult "&lt;0.132" ;
+    sosa:hasResult [
+        a qudt:QuantityValue ;
+        qudt:upperBound 0.132 ;
+        qudt:hasUnit unit:MilliGM-PER-L
+    ] .
+
+determinand:0111
+    a skos:Concept ;
+    skos:notation "0111" ;
+    skos:prefLabel "Ammoniacal Nitrogen as N" ;
+    skos:altLabel "Ammonia(N)" .</code></pre>
+
+          <section class="activity" id="activity-1" property="hasPart" typeof="LearningResource" resource="#activity-1">
+            <span class="activity__label">Activity 1</span>
+            <h3 property="name">Write Turtle</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-1">#activity-1</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>Module 3 described the determinand <code>0111</code> with a table of four triples. Write them as Turtle, declaring your prefixes, writing the subject once, and adding a fifth triple that says it’s a <code>skos:Concept</code>.</p>
+              <p>The prefix <code>determinand:</code> stands for <code><span class="nw">https://data.example/</span><wbr><span class="nw">determinands/</span><wbr><span class="nw">Concept/</span></code>, and the concept scheme is <code>dataset:determinands</code>, where <code>dataset:</code> stands for <code>https://data.example/</code>.</p>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <pre><code>@prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+@prefix determinand: &lt;https://data.example/determinands/Concept/&gt; .
+@prefix dataset: &lt;https://data.example/&gt; .
+
+determinand:0111
+    a skos:Concept ;
+    skos:notation "0111" ;
+    skos:prefLabel "Ammoniacal Nitrogen as N" ;
+    skos:altLabel "Ammonia(N)" ;
+    skos:inScheme dataset:determinands .</code></pre>
+                <p>Each line before the last ends with a semicolon, because the subject carries on. The last ends with a full stop.</p>
+              </div>
+            </details>
+          </section>
+
+          <section class="activity" id="activity-2" property="hasPart" typeof="LearningResource" resource="#activity-2">
+            <span class="activity__label">Activity 2</span>
+            <h3 property="name">Spot the mistakes</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-2">#activity-2</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>This Turtle has three mistakes, and a parser would reject it. Find them.</p>
+              <pre><code>@prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+
+determinand:0076
+    skos:notation "0076" ;
+    skos:prefLabel "Temperature of Water" ,
+    skos:altLabel "Temp Water"</code></pre>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <ol>
+                  <li>The prefix <code>determinand:</code> is used but never declared.</li>
+                  <li>The line with <code>skos:prefLabel</code> ends in a comma, which would make the next line another label. It needs a semicolon.</li>
+                  <li>The last line has no full stop.</li>
+                </ol>
+                <pre><code>@prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+@prefix determinand: &lt;https://data.example/determinands/Concept/&gt; .
+
+determinand:0076
+    skos:notation "0076" ;
+    skos:prefLabel "Temperature of Water" ;
+    skos:altLabel "Temp Water" .</code></pre>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="n-triples">N-Triples</h2>
+
+          <p><strong>N-Triples</strong> is Turtle with every piece of shorthand taken away. Each line is one complete triple, with full URIs and no prefixes, base, semicolons or brackets. The first line you wrote in this module was already N-Triples.</p>
+
+          <pre><code>&lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY&gt; &lt;http://www.w3.org/2004/02/skos/core#prefLabel&gt; "CORBY STW FINAL EFFLUENT" .
+&lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/sample/2119744&gt; &lt;http://www.w3.org/ns/sosa/isSampleOf&gt; &lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY&gt; .
+&lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/sample/2119744/observation/0111&gt; &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://www.w3.org/ns/sosa/Observation&gt; .
+&lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/sample/2119744/observation/0111&gt; &lt;http://www.w3.org/ns/sosa/hasSample&gt; &lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/sample/2119744&gt; .
+&lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/sample/2119744/observation/0111&gt; &lt;http://www.w3.org/ns/sosa/observedProperty&gt; &lt;https://data.example/determinands/Concept/0111&gt; .
+&lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/sample/2119744/observation/0111&gt; &lt;http://www.w3.org/ns/sosa/phenomenonTime&gt; "2025-11-15T08:43:00"^^&lt;http://www.w3.org/2001/XMLSchema#dateTime&gt; .
+&lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/sample/2119744/observation/0111&gt; &lt;http://www.w3.org/ns/sosa/hasResult&gt; _:result .
+_:result &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#type&gt; &lt;http://qudt.org/schema/qudt/QuantityValue&gt; .
+_:result &lt;http://qudt.org/schema/qudt/upperBound&gt; "0.132"^^&lt;http://www.w3.org/2001/XMLSchema#decimal&gt; .
+_:result &lt;http://qudt.org/schema/qudt/hasUnit&gt; &lt;http://qudt.org/vocab/unit/MilliGM-PER-L&gt; .</code></pre>
+
+          <p>It’s long to read, but it suits programs. Every line stands on its own, so a file can be split, streamed, sorted or compared line by line, and loading millions of triples into a database is simple. The blank node keeps its label, <code>_:result</code>, so the lines that describe it still connect.</p>
+
+          <h2 id="rdf-xml">RDF/XML</h2>
+
+          <p><strong>RDF/XML</strong> was the first standard way of writing RDF, and you’ll meet it in older published data and in many ontologies. It writes the same triples as XML elements:</p>
+
+          <pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:sosa="http://www.w3.org/ns/sosa/"
+    xmlns:qudt="http://qudt.org/schema/qudt/"
+    xml:base="https://environment.data.gov.uk/water-quality/"&gt;
+
+  &lt;sosa:Observation rdf:about="sampling-point/AN-CORBY/sample/2119744/observation/0111"&gt;
+    &lt;sosa:hasSample rdf:resource="sampling-point/AN-CORBY/sample/2119744"/&gt;
+    &lt;sosa:observedProperty rdf:resource="https://data.example/determinands/Concept/0111"/&gt;
+    &lt;sosa:phenomenonTime rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime"&gt;2025-11-15T08:43:00&lt;/sosa:phenomenonTime&gt;
+    &lt;sosa:hasResult&gt;
+      &lt;qudt:QuantityValue&gt;
+        &lt;qudt:upperBound rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal"&gt;0.132&lt;/qudt:upperBound&gt;
+        &lt;qudt:hasUnit rdf:resource="http://qudt.org/vocab/unit/MilliGM-PER-L"/&gt;
+      &lt;/qudt:QuantityValue&gt;
+    &lt;/sosa:hasResult&gt;
+  &lt;/sosa:Observation&gt;
+
+  &lt;rdf:Description rdf:about="sampling-point/AN-CORBY/sample/2119744"&gt;
+    &lt;sosa:isSampleOf rdf:resource="sampling-point/AN-CORBY"/&gt;
+  &lt;/rdf:Description&gt;
+
+  &lt;rdf:Description rdf:about="sampling-point/AN-CORBY"&gt;
+    &lt;skos:prefLabel&gt;CORBY STW FINAL EFFLUENT&lt;/skos:prefLabel&gt;
+  &lt;/rdf:Description&gt;
+&lt;/rdf:RDF&gt;</code></pre>
+
+          <p>Each part maps straight onto something you already know:</p>
+
+          <dl class="summary-list summary-list--narrow-key">
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>xmlns:skos="…"</code></dt>
+              <dd class="summary-list__value">Declares a prefix, like <code>@prefix</code> in Turtle.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>xml:base="…"</code></dt>
+              <dd class="summary-list__value">Sets the base for relative URIs, like <code>@base</code>.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>rdf:about="…"</code></dt>
+              <dd class="summary-list__value">The subject. Every element inside it is a statement about this subject.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>&lt;sosa:Observation …&gt;</code></dt>
+              <dd class="summary-list__value">An element named after a class says the subject has that type, like <code>a sosa:Observation</code>. <code>rdf:Description</code> describes a subject without giving a type.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>rdf:resource="…"</code></dt>
+              <dd class="summary-list__value">The object is a URI.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">Text inside an element</dt>
+              <dd class="summary-list__value">The object is a literal, with <code>rdf:datatype</code> giving its datatype.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key">An element with no <code>rdf:about</code></dt>
+              <dd class="summary-list__value">A blank node, like <code>[ ]</code> in Turtle.</dd>
+            </div>
+          </dl>
+
+          <h3>Converting RDF/XML to Turtle</h3>
+
+          <p>Because both formats carry the same triples, a program can read one and write the other. Save the XML above as <code>corby.rdf</code>, then run:</p>
+
+          <pre><code>pip install rdflib
+python3 -c "import rdflib, sys; print(rdflib.Graph().parse(sys.argv[1]).serialize(format='turtle'))" corby.rdf</code></pre>
+
+          <p>Here is what it prints:</p>
+
+          <pre><code>@prefix qudt: &lt;http://qudt.org/schema/qudt/&gt; .
+@prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+@prefix sosa: &lt;http://www.w3.org/ns/sosa/&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+
+&lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/sample/2119744/observation/0111&gt; a sosa:Observation ;
+    sosa:hasResult [ a qudt:QuantityValue ;
+            qudt:hasUnit &lt;http://qudt.org/vocab/unit/MilliGM-PER-L&gt; ;
+            qudt:upperBound 0.132 ] ;
+    sosa:hasSample &lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/sample/2119744&gt; ;
+    sosa:observedProperty &lt;https://data.example/determinands/Concept/0111&gt; ;
+    sosa:phenomenonTime "2025-11-15T08:43:00"^^xsd:dateTime .
+
+&lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY&gt; skos:prefLabel "CORBY STW FINAL EFFLUENT" .
+
+&lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/sample/2119744&gt; sosa:isSampleOf &lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY&gt; .</code></pre>
+
+          <p>The Turtle looks different from the version you wrote. The URIs are written out in full because the converter has no base to use, the predicates are in alphabetical order, and the blank node’s brackets are laid out another way. It’s the same graph: the same ten triples, which is what “meaning the same thing” comes down to. Serialisations differ in layout, and the triples are what count.</p>
+
+          <section class="activity" id="activity-3" property="hasPart" typeof="LearningResource" resource="#activity-3">
+            <span class="activity__label">Activity 3</span>
+            <h3 property="name">Convert and compare</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-3">#activity-3</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>Convert <code>corby.rdf</code> to N-Triples by changing <code>format='turtle'</code> to <code>format='nt'</code> in the command above. Count the lines, and compare them with the N-Triples in this module.</p>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <p>You get ten lines, matching the ten triples above. They may come out in a different order, and the blank node gets a generated label in place of <code>_:result</code>, but every triple is there. Turtle, N-Triples and RDF/XML have written down one graph three ways.</p>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="json-ld">JSON-LD</h2>
+
+          <p><strong>JSON-LD</strong> is RDF written as JSON, and it’s the native format of the RESTful Linked Data APIs on <code>environment.data.gov.uk</code>. It’s built so that a developer who has never heard of RDF can use the response as ordinary JSON, while anyone who wants the triples can get them exactly.</p>
+
+          <p>Here is the same graph as JSON-LD, shaped the way the APIs shape their responses: short keys, an <code>id</code> for each thing, and related things nested inside the thing that points to them.</p>
+
+          <pre><code>{
+  "@context": {
+    "@base": "https://environment.data.gov.uk/water-quality/",
+    "sosa": "http://www.w3.org/ns/sosa/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "qudt": "http://qudt.org/schema/qudt/",
+    "unit": "http://qudt.org/vocab/unit/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "id": "@id",
+    "type": "@type",
+    "hasSample": { "@id": "sosa:hasSample", "@type": "@id" },
+    "isSampleOf": { "@id": "sosa:isSampleOf", "@type": "@id" },
+    "observedProperty": { "@id": "sosa:observedProperty", "@type": "@id" },
+    "phenomenonTime": { "@id": "sosa:phenomenonTime", "@type": "xsd:dateTime" },
+    "hasResult": { "@id": "sosa:hasResult" },
+    "upperBound": { "@id": "qudt:upperBound", "@type": "xsd:decimal" },
+    "hasUnit": { "@id": "qudt:hasUnit", "@type": "@id" },
+    "prefLabel": "skos:prefLabel"
+  },
+  "id": "sampling-point/AN-CORBY/sample/2119744/observation/0111",
+  "type": "sosa:Observation",
+  "hasSample": {
+    "id": "sampling-point/AN-CORBY/sample/2119744",
+    "isSampleOf": {
+      "id": "sampling-point/AN-CORBY",
+      "prefLabel": "CORBY STW FINAL EFFLUENT"
+    }
+  },
+  "observedProperty": "https://data.example/determinands/Concept/0111",
+  "phenomenonTime": "2025-11-15T08:43:00",
+  "hasResult": {
+    "type": "qudt:QuantityValue",
+    "upperBound": "0.132",
+    "hasUnit": "unit:MilliGM-PER-L"
+  }
+}</code></pre>
+
+          <h3>The context</h3>
+
+          <p>The <code>@context</code> is what turns this JSON into triples. It maps each short key to a full URI:</p>
+          <ul>
+            <li><code><span class="nw">"prefLabel":</span> <span class="nw">"skos:</span><wbr><span class="nw">prefLabel"</span></code> says the key <code>prefLabel</code> means the predicate <code>skos:prefLabel</code></li>
+            <li><code>"id": "@id"</code> and <code>"type": "@type"</code> say which keys hold a thing’s URI and its class</li>
+            <li><code>"@type": "@id"</code> on a key says its value is a URI, so <code>observedProperty</code> links to a concept</li>
+            <li><code>"@type": "xsd:dateTime"</code> on a key gives its values a datatype, so <code>phenomenonTime</code> is a date and time</li>
+            <li><code>"@base"</code> sets the base for relative URIs, as in Turtle</li>
+          </ul>
+
+          <p>The API puts its context in a file of its own and refers to it by URL, so each response stays short. A response from the observation endpoint starts with <code><span class="nw">"@context":</span> <span class="nw">"https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">context/</span><wbr><span class="nw">wqa_observation_context.json-ld"</span></code>.</p>
+
+          <h3>Nesting is the graph, shaped as a tree</h3>
+
+          <p>The sample sits inside the observation, and the sampling point sits inside the sample. Each nested object with an <code>id</code> is a thing with a URI, and the key it sits under is the predicate that links them. The result has no <code>id</code>, so it’s a blank node: the JSON-LD form of <code>[ ]</code>.</p>
+
+          <p>Ignore every key starting with <code>@</code> and you have plain JSON with readable keys, which is how most developers will use it. Read the context as well and you have exactly the ten triples from the Turtle.</p>
+
+          <section class="activity" id="activity-4" property="hasPart" typeof="LearningResource" resource="#activity-4">
+            <span class="activity__label">Activity 4</span>
+            <h3 property="name">Read JSON-LD as triples</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-4">#activity-4</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>Using the context, write the triple that each of these parts of the JSON-LD gives you, in Turtle:</p>
+              <ol>
+                <li><code><span class="nw">"phenomenonTime":</span> <span class="nw">"2025-11-15T08:43:00"</span></code> on the observation</li>
+                <li><code><span class="nw">"isSampleOf":</span> <span class="nw">{</span> <span class="nw">"id":</span> <span class="nw">"sampling-point/</span><wbr><span class="nw">AN-CORBY",</span> <span class="nw">…</span> <span class="nw">}</span></code> on the sample</li>
+                <li><code><span class="nw">"hasUnit":</span> <span class="nw">"unit:</span><wbr><span class="nw">MilliGM-PER-L"</span></code> on the result</li>
+              </ol>
+              <p>Then paste the whole JSON-LD into the <a href="https://json-ld.org/playground/">JSON-LD Playground</a> and look at the N-Quads tab to check your answers.</p>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <pre><code>&lt;sampling-point/AN-CORBY/sample/2119744/observation/0111&gt;
+    sosa:phenomenonTime "2025-11-15T08:43:00"^^xsd:dateTime .
+
+&lt;sampling-point/AN-CORBY/sample/2119744&gt;
+    sosa:isSampleOf &lt;sampling-point/AN-CORBY&gt; .
+
+_:result qudt:hasUnit unit:MilliGM-PER-L .</code></pre>
+                <p>The datatype on the first comes from the context, not the JSON value. The third has a blank node as its subject, because the result has no <code>id</code>. The Playground shows N-Quads, which is N-Triples with an optional fourth part naming a graph; here the fourth part is empty.</p>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="rdfa">RDFa</h2>
+
+          <p><strong>RDFa</strong> writes triples into the attributes of an ordinary web page, so the page a person reads is also data. This course is written that way. Here is a cut-down version of the source of this page:</p>
+
+          <pre><code>&lt;body vocab="https://schema.org/"&gt;
+  &lt;main about="" typeof="LearningResource"&gt;
+    &lt;link property="isPartOf" href="../../"&gt;
+    &lt;h1 property="name"&gt;Serialisation and content negotiation&lt;/h1&gt;
+    &lt;section id="quiz" property="hasPart" typeof="Quiz" resource="#quiz"&gt;
+      …
+    &lt;/section&gt;
+  &lt;/main&gt;
+&lt;/body&gt;</code></pre>
+
+          <p>And here are the triples it holds, in Turtle:</p>
+
+          <pre><code>@base &lt;https://example.org/modules/serialisation-and-content-negotiation/&gt; .
+@prefix schema: &lt;https://schema.org/&gt; .
+
+&lt;&gt; a schema:LearningResource ;
+    schema:isPartOf &lt;../../&gt; ;
+    schema:name "Serialisation and content negotiation" ;
+    schema:hasPart &lt;#quiz&gt; .
+
+&lt;#quiz&gt; a schema:Quiz .</code></pre>
+
+          <p><code>vocab</code> sets the vocabulary for unprefixed names, like a default prefix. <code>about</code> sets the subject, and <code>about=""</code> means this page itself. <code>typeof</code> gives a type, and <code>property</code> gives a predicate whose object is the element’s text or link. An RDFa processor reading the page also records one extra triple saying which vocabulary the page uses.</p>
+
+          <p>View the source of any page in this course to read the rest: the modules, the activities and each quiz question, with its accepted answer.</p>
+
+          <h2 id="content-negotiation">Content negotiation</h2>
+
+          <p>Each thing has one URI, and the same URI can be served in different formats. When a program requests a URI, it sends an <code>Accept</code> header listing the formats it wants. The server sends back the closest match it has and says what it chose in the <code>Content-Type</code> header. This is <strong>content negotiation</strong>.</p>
+
+          <p>Your browser asks for a web page, so opening <code>AN-CORBY</code>’s URI shows you a page. A program can ask the same URI for data.</p>
+
+          <h3>JSON-LD</h3>
+
+          <pre><code>curl -H "Accept: application/ld+json" https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY</code></pre>
+
+          <pre><code>{"@context":"https://environment.data.gov.uk/water-quality/context/wqa_samplingpoint_context.json-ld",
+ "@type":"hydra:Collection","totalItems":1,
+ "member":[{"id":"https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY",
+   "@type":["sosa:FeatureOfInterest","geo:Feature"],
+   "altLabel":"CORBY STW F/E","prefLabel":"CORBY STW FINAL EFFLUENT","notation":"AN-CORBY",
+   "hasObservations":"https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/observation",
+   …}]}</code></pre>
+
+          <p>The response is a collection with one member: the sampling point, with its URI as <code>id</code>, its two classes, its notation and labels. <code>hasObservations</code> is the URI of its observations, so a program can follow the link to them.</p>
+
+          <h3>GeoJSON</h3>
+
+          <pre><code>curl -H "Accept: application/geo+json" https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY</code></pre>
+
+          <pre><code>{"type":"hydra:Collection","member":[{"type":"Feature",
+  "geometry":{"coordinates":[-0.665027896,52.490089102],"type":"Point"},
+  "properties":{"name":"CORBY STW FINAL EFFLUENT","status":"OPEN",
+    "type":"SEWAGE DISCHARGES - FINAL/TREATED EFFLUENT - WATER COMPANY",
+    "region":"Anglian","area":"ANGLIAN - LINCS AND NORTHANTS",
+    "subArea":"L&amp;W NORTH &amp; SOUTH","notation":"AN-CORBY",
+    "isDistributionOf":"https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY"}}],
+ "totalItems":1}</code></pre>
+
+          <p>Same URI, same sampling point, now as GeoJSON, which mapping tools read directly. The point is given in longitude and latitude, which GeoJSON always uses, and <code>isDistributionOf</code> carries the sampling point’s URI, so even this format links back to the thing it describes.</p>
+
+          <h3>CSV, for lists</h3>
+
+          <p>The list of a sampling point’s observations can also be had as CSV or as JSON Lines, one JSON object per line, which suit spreadsheets and streaming. Add <code>-i</code> to see the response headers as well as the body:</p>
+
+          <pre><code>curl -i -H "Accept: text/csv" "https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/observation?limit=2"</code></pre>
+
+          <pre><code>HTTP/2 200
+content-type: text/csv; charset=utf-8
+vary: API-Version,Accept,Content-Crs
+link: &lt;…/observation?limit=2&amp;skip=0&gt;; rel="first", &lt;…/observation?limit=2&amp;skip=2&gt;; rel="next", …
+
+id,samplingPoint.notation,samplingPoint.prefLabel,…,determinand.notation,determinand.prefLabel,result,unit
+https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/sample/687968/observation/0076,AN-CORBY,CORBY STW FINAL EFFLUENT,…,0076,Temperature of Water,15,CELSIUS
+https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY/sample/687968/observation/0085,AN-CORBY,CORBY STW FINAL EFFLUENT,…,0085,BOD : 5 Day ATU,&lt;3,MILLIGRAM PER LITRE</code></pre>
+
+          <p>Three headers are worth reading:</p>
+          <ul>
+            <li><code>content-type</code> says which format came back</li>
+            <li><code>vary</code> includes <code>Accept</code>, which tells caches that this URI gives different responses for different <code>Accept</code> headers</li>
+            <li><code>link</code> gives the URIs of the first, next and last pages, so a program can walk through thousands of observations a page at a time</li>
+          </ul>
+
+          <p>Even in CSV, the first column is each observation’s URI. The key travels with the data in every format.</p>
+
+          <h3>Asking for a format that isn’t offered</h3>
+
+          <pre><code>curl -i -H "Accept: text/csv" https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY</code></pre>
+
+          <pre><code>HTTP/2 400
+content-type: application/json
+
+{"detail":"Requested serialization format not allowed. Accept header: text/csv. Allowed: ['application/ld+json', 'application/geo+json']"}</code></pre>
+
+          <p>Each endpoint offers the formats that suit it. A single sampling point is offered as JSON-LD or GeoJSON, and the error says so, so you know what to ask for instead.</p>
+
+          <h3>File extensions</h3>
+
+          <p>Some services also give each format an address of its own by adding an extension, such as <code>AN-CORBY.ttl</code> or <code>AN-CORBY.json</code>. That can be handy for a download link, but it creates a second URI for the same sampling point, one that names a file format as well as a thing. The Water Quality service keeps one URI per thing and lets the <code>Accept</code> header choose the format.</p>
+
+          <section class="activity" id="activity-5" property="hasPart" typeof="LearningResource" resource="#activity-5">
+            <span class="activity__label">Activity 5</span>
+            <h3 property="name">Negotiate</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-5">#activity-5</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>Using <code>curl -i</code>, make four requests and note the status and <code>content-type</code> of each:</p>
+              <ol>
+                <li>the observation <code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">sample/</span><wbr><span class="nw">2119744/</span><wbr><span class="nw">observation/</span><wbr><span class="nw">0111</span></code>, asking for <code>application/ld+json</code></li>
+                <li>the same observation, asking for <code>text/csv</code></li>
+                <li>the list <code><span class="nw">https://environment.data.gov.uk/</span><wbr><span class="nw">water-quality/</span><wbr><span class="nw">sampling-point/</span><wbr><span class="nw">AN-CORBY/</span><wbr><span class="nw">observation?limit=5</span></code>, asking for <code>text/csv</code></li>
+                <li>the same list, asking for <code>application/x-jsonlines</code></li>
+              </ol>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <ol>
+                  <li><code>200</code> and <code>application/ld+json</code>, with a result of less than 0.132 milligrams per litre.</li>
+                  <li><code>400</code>, with a message saying a single observation is offered as <code>application/ld+json</code>.</li>
+                  <li><code>200</code> and <code>text/csv</code>: five rows, one observation each, with a <code>link</code> header pointing to the next page.</li>
+                  <li><code>200</code> and <code>application/x-jsonlines</code>: the same five observations, one JSON object per line.</li>
+                </ol>
+                <p>Each endpoint offers the formats that suit what it holds. A single observation is one small graph, so it comes as JSON-LD; a list of thousands suits formats that can be read a line at a time.</p>
+              </div>
+            </details>
+          </section>
+
+          <section class="quiz quiz--5" id="quiz" property="hasPart" typeof="Quiz" resource="#quiz">
+            <h2 property="name">Check your understanding</h2>
+            <meta property="assesses" content="Turtle syntax, equivalence of serialisations, JSON-LD contexts, and content negotiation">
+            <p>Choose an answer to see whether it’s right. You can change your answer as often as you like.</p>
+
+            <div class="quiz__questions">
+              <fieldset class="fieldset quiz__question" id="q1" property="hasPart" typeof="Question" resource="#q1">
+                <legend class="fieldset__legend"><span class="caption-m">Question 1 of 5</span><span property="text">In Turtle, what does a semicolon <code>;</code> at the end of a line mean?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q1-a">
+                    <input class="radios__input" id="q1-a" name="q1" type="radio">
+                    <label class="radios__label" for="q1-a" property="text">The statement is finished.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> A full stop finishes a statement.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q1-b">
+                    <input class="radios__input" id="q1-b" name="q1" type="radio">
+                    <label class="radios__label" for="q1-b" property="text">Same subject, next predicate.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> The next line is another statement about the same subject.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q1-c">
+                    <input class="radios__input" id="q1-c" name="q1" type="radio">
+                    <label class="radios__label" for="q1-c" property="text">Same subject and predicate, next object.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> That’s what a comma means.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q2" property="hasPart" typeof="Question" resource="#q2">
+                <legend class="fieldset__legend"><span class="caption-m">Question 2 of 5</span><span property="text">An RDF/XML file and a Turtle file both convert to the same ten lines of N-Triples. What does that tell you?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q2-a">
+                    <input class="radios__input" id="q2-a" name="q2" type="radio">
+                    <label class="radios__label" for="q2-a" property="text">They hold the same graph, so they mean the same thing.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> The triples are the meaning. The serialisation is only how they’re written down.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q2-b">
+                    <input class="radios__input" id="q2-b" name="q2" type="radio">
+                    <label class="radios__label" for="q2-b" property="text">One was converted from the other.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> They could have been written separately, by different people. What they share is the graph, however they were made.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q2-c">
+                    <input class="radios__input" id="q2-c" name="q2" type="radio">
+                    <label class="radios__label" for="q2-c" property="text">The Turtle file is the original, because it’s easier to read.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> No serialisation outranks another. Each is a complete way of writing the same graph.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q3" property="hasPart" typeof="Question" resource="#q3">
+                <legend class="fieldset__legend"><span class="caption-m">Question 3 of 5</span><span property="text">In a JSON-LD response, what tells a program that the key <code>prefLabel</code> means <code>skos:prefLabel</code>?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q3-a">
+                    <input class="radios__input" id="q3-a" name="q3" type="radio">
+                    <label class="radios__label" for="q3-a" property="text">The name of the key.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> A key name is only a string. Any API could use <code>prefLabel</code> to mean something else.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q3-b">
+                    <input class="radios__input" id="q3-b" name="q3" type="radio">
+                    <label class="radios__label" for="q3-b" property="text">The <code>@context</code>.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> The context maps each key to a full URI, which is what makes the JSON into triples.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q3-c">
+                    <input class="radios__input" id="q3-c" name="q3" type="radio">
+                    <label class="radios__label" for="q3-c" property="text">The <code>content-type</code> header.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> The header says the response is JSON-LD. The context says what each key means.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q4" property="hasPart" typeof="Question" resource="#q4">
+                <legend class="fieldset__legend"><span class="caption-m">Question 4 of 5</span><span property="text">How does a program ask <code>AN-CORBY</code>’s URI for GeoJSON?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q4-a">
+                    <input class="radios__input" id="q4-a" name="q4" type="radio">
+                    <label class="radios__label" for="q4-a" property="text">It adds <code>.geojson</code> to the end of the URI.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> That would be a different URI. This service keeps one URI per thing.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q4-b">
+                    <input class="radios__input" id="q4-b" name="q4" type="radio">
+                    <label class="radios__label" for="q4-b" property="text">It sends <code><span class="nw">Accept:</span> <span class="nw">application/</span><wbr><span class="nw">geo+json</span></code> with its request.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> The same URI answers with GeoJSON, and the <code>content-type</code> header confirms it.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q4-c">
+                    <input class="radios__input" id="q4-c" name="q4" type="radio">
+                    <label class="radios__label" for="q4-c" property="text">It downloads the JSON-LD and converts it.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> It could, but the server will send GeoJSON directly if asked.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q5" property="hasPart" typeof="Question" resource="#q5">
+                <legend class="fieldset__legend"><span class="caption-m">Question 5 of 5</span><span property="text">Why does a response that depends on the <code>Accept</code> header include <code>Accept</code> in its <code>vary</code> header?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q5-a">
+                    <input class="radios__input" id="q5-a" name="q5" type="radio">
+                    <label class="radios__label" for="q5-a" property="text">To tell the client which formats are available.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> It says which request headers changed the response, not which formats exist.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q5-b">
+                    <input class="radios__input" id="q5-b" name="q5" type="radio">
+                    <label class="radios__label" for="q5-b" property="text">To ask the client to try a different format.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> The response is already the format chosen. <code>vary</code> is information for whoever stores it.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q5-c">
+                    <input class="radios__input" id="q5-c" name="q5" type="radio">
+                    <label class="radios__label" for="q5-c" property="text">So caches keep a separate copy of the response for each format asked for.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> One URI gives different responses, so a cache has to know the <code>Accept</code> header is part of the question.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="quiz__score" aria-live="polite">
+              <p>You’ve answered <span class="count-answered"></span> of 5 questions and got <span class="count-correct"></span> right.</p>
+            </div>
+
+            <div class="quiz__complete">
+              <div class="panel">
+                <h2 class="panel__title">Module 4 complete</h2>
+                <p class="panel__body">You answered every question correctly</p>
+              </div>
+            </div>
+          </section>
+
+          <h2 id="summary">Summary</h2>
+
+          <p>In this module you learned that:</p>
+          <ul>
+            <li>a serialisation is a way of writing a graph down, and every serialisation of a graph holds the same triples</li>
+            <li>Turtle is written for people, with prefixes, a base, <code>;</code>, <code>,</code>, <code>a</code> and <code>[ ]</code> as shorthand</li>
+            <li>N-Triples is one full triple per line, for programs and bulk data</li>
+            <li>RDF/XML writes the same triples as XML, and converts to Turtle with a single command</li>
+            <li>JSON-LD is ordinary JSON plus a context that maps its keys to URIs, and it’s the native format of the APIs</li>
+            <li>RDFa puts triples into a web page’s attributes, which is how this course describes itself</li>
+            <li>one URI can serve several formats, chosen with the <code>Accept</code> header and confirmed by <code>content-type</code></li>
+          </ul>
+
+          <p>Module 5 asks questions of graphs like this one with SPARQL.</p>
+
+          <nav class="pagination" aria-label="Pagination">
+            <div class="pagination__prev">
+              <a class="pagination__link" href="../triples-and-vocabularies/" rel="prev">
+                <span class="pagination__label">Previous</span>
+                Module 3: Triples and vocabularies
+              </a>
+            </div>
+            <div class="pagination__upcoming">
+              <span class="pagination__label">Next, coming soon</span>
+              <strong>Module 5: Querying with SPARQL</strong>
+            </div>
+          </nav>
+        </div>
+
+        <div class="grid-column-one-third">
+          <aside class="related" role="complementary">
+            <h2>This page is data</h2>
+            <p>This page’s RDFa is the example in <a href="#rdfa">RDFa</a>. Every activity and question on it has a hash URI, such as <a href="#activity-5">#activity-5</a>.</p>
+            <p>The Turtle, N-Triples, RDF/XML and JSON-LD on this page were all checked with an RDF parser: they hold the same ten triples.</p>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="width-container">
+      <p>Linked Data Bootcamp is built with HTML and CSS.</p>
+      <p>This course is dedicated to the public domain under <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license">CC0 1.0 Universal</a>.</p>
+      <p>Contains public sector information from the Environment Agency, licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>.</p>
+    </div>
+  </footer>
+</body>
+</html>

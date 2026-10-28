@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Learn Linked Data – Linked Data Bootcamp</title>
+  <meta name="description" content="A self-paced course in Linked Data: from keys to URIs, authority and persistence, RDF vocabularies, serialisation and content negotiation, and SPARQL.">
+  <link rel="stylesheet" href="assets/bootcamp.css">
+</head>
+<body vocab="https://schema.org/" prefix="dct: http://purl.org/dc/terms/">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="header">
+    <div class="width-container header__container">
+      <a href="./" class="header__service">
+        <svg class="header__mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <line x1="5" y1="18" x2="12" y2="6" stroke="currentColor" stroke-width="2"/>
+          <line x1="12" y1="6" x2="19" y2="18" stroke="currentColor" stroke-width="2"/>
+          <line x1="5" y1="18" x2="19" y2="18" stroke="currentColor" stroke-width="2"/>
+          <circle cx="12" cy="6" r="3.5" fill="currentColor"/>
+          <circle cx="5" cy="18" r="3.5" fill="currentColor"/>
+          <circle cx="19" cy="18" r="3.5" fill="currentColor"/>
+        </svg>Linked Data Bootcamp
+      </a>
+    </div>
+  </header>
+
+  <div class="width-container">
+    <div class="phase-banner">
+      <p><strong class="tag">Beta</strong>This is a new course. Quizzes are marked in your browser as you answer.</p>
+    </div>
+
+    <main class="main-wrapper" id="main-content" about="" typeof="Course">
+      <div class="grid-row">
+        <div class="grid-column-two-thirds">
+          <h1 property="name dct:title">Learn Linked Data</h1>
+
+          <p class="body-l" property="description">Use this course to learn how to publish data on the web so that it joins up with everyone else’s, and how to ask questions of it once it does.</p>
+
+          <p>The course starts from something you already do: joining two tables on a key. It follows that idea, one step at a time, until the key is a URI that anyone on the web can use, look up and query.</p>
+
+          <p>In this course you’ll learn how to:</p>
+          <ul>
+            <li property="teaches">turn the keys and codes in your tables into URIs</li>
+            <li property="teaches">decide who mints a URI and keep it stable</li>
+            <li property="teaches">describe things as RDF using shared vocabularies</li>
+            <li property="teaches">serve one resource in many formats with content negotiation</li>
+            <li property="teaches">query graphs with SPARQL</li>
+          </ul>
+
+          <p>Every example follows one water quality sampling point, the samples taken there and the observations made on them, so each module builds on the one before.</p>
+
+          <a href="modules/keys-to-uris/" role="button" draggable="false" class="button button--start">
+            Start now
+            <svg class="button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
+            </svg>
+          </a>
+
+          <h2>Before you start</h2>
+
+          <p property="coursePrerequisites">You’ll find the course easier if you’ve joined two tables before, in a spreadsheet lookup or a SQL query.</p>
+
+          <p>You’ll need:</p>
+          <ul>
+            <li>a web browser</li>
+            <li>a terminal with <code>curl</code>, from Module 4 onwards</li>
+          </ul>
+
+          <p>Each module ends with a short quiz. Choose an answer and you’ll see straight away whether it’s right, and why. You can change your answer as often as you like.</p>
+
+          <h2 id="contents">Course contents</h2>
+
+          <ol class="task-list">
+            <li class="task-list__item" property="hasPart" typeof="LearningResource" resource="modules/keys-to-uris/">
+              <span class="task-list__name">
+                <a href="modules/keys-to-uris/" property="url"><span property="name">Module 1: From keys to URIs</span></a>
+                <span class="task-list__hint" property="description">Why codes break when they leave their table, and how a URI carries its meaning with it.</span>
+                <meta property="position" content="1">
+              </span>
+              <strong class="task-list__status tag tag--turquoise">Available</strong>
+            </li>
+            <li class="task-list__item" property="hasPart" typeof="LearningResource" resource="modules/authority-and-persistence/">
+              <span class="task-list__name">
+                <a href="modules/authority-and-persistence/" property="url"><span property="name">Module 2: Authority, minting and persistence</span></a>
+                <span class="task-list__hint" property="description">Who is responsible for a URI, how to mint one, and why identifiers should only change when the thing they identify does.</span>
+                <meta property="position" content="2">
+              </span>
+              <strong class="task-list__status tag tag--turquoise">Available</strong>
+            </li>
+            <li class="task-list__item" property="hasPart" typeof="LearningResource" resource="modules/triples-and-vocabularies/">
+              <span class="task-list__name">
+                <a href="modules/triples-and-vocabularies/" property="url"><span property="name">Module 3: Triples and vocabularies</span></a>
+                <span class="task-list__hint" property="description">Statements as triples, and the vocabularies that describe catalogues, concepts and observations: DCAT, SKOS and SOSA.</span>
+                <meta property="position" content="3">
+              </span>
+              <strong class="task-list__status tag tag--turquoise">Available</strong>
+            </li>
+            <li class="task-list__item" property="hasPart" typeof="LearningResource" resource="modules/serialisation-and-content-negotiation/">
+              <span class="task-list__name">
+                <a href="modules/serialisation-and-content-negotiation/" property="url"><span property="name">Module 4: Serialisation and content negotiation</span></a>
+                <span class="task-list__hint" property="description">One graph written as Turtle, N-Triples, RDF/XML, JSON-LD and RDFa, and one URI serving different formats on request.</span>
+                <meta property="position" content="4">
+              </span>
+              <strong class="task-list__status tag tag--turquoise">Available</strong>
+            </li>
+            <li class="task-list__item" property="hasPart" typeof="LearningResource" resource="modules/sparql/">
+              <span class="task-list__name">
+                <span property="name">Module 5: Querying with SPARQL</span>
+                <span class="task-list__hint" property="description">Asking questions of a graph: patterns, joins on URIs, BIND, string functions, UNION and OPTIONAL.</span>
+                <meta property="position" content="5">
+              </span>
+              <span class="task-list__status">Coming soon</span>
+            </li>
+          </ol>
+        </div>
+
+        <div class="grid-column-one-third">
+          <aside class="related" role="complementary">
+            <h2>This page is data</h2>
+            <p>Every page in this course describes itself in RDFa, a way of embedding Linked Data in HTML.</p>
+            <p>View the source of this page to find the statements it makes about the course: its name, what it teaches and the modules it contains.</p>
+            <p>You’ll learn to read them in Module 4.</p>
+          </aside>
+        </div>
+      </div>
+
+      <meta property="inLanguage" content="en-GB">
+      <meta property="educationalLevel" content="Beginner">
+      <meta property="dct:modified" content="2026-10-28">
+      <link property="license dct:license" href="https://creativecommons.org/publicdomain/zero/1.0/">
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="width-container">
+      <p>Linked Data Bootcamp is built with HTML and CSS.</p>
+      <p>This course is dedicated to the public domain under <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license">CC0 1.0 Universal</a>.</p>
+    </div>
+  </footer>
+</body>
+</html>
