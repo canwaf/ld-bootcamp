@@ -42,12 +42,12 @@
       <meta property="position" content="4">
       <meta property="learningResourceType" content="Module">
       <meta property="inLanguage" content="en-GB">
-      <meta property="dct:modified" content="2026-10-28">
+      <meta property="dct:modified" content="2026-10-29">
       <link property="license dct:license" href="https://creativecommons.org/publicdomain/zero/1.0/">
 
       <div class="grid-row">
         <div class="grid-column-two-thirds">
-          <span class="caption-l">Module 4 of 5</span>
+          <span class="caption-l">Module 4 of 9</span>
           <h1 property="name dct:title">Serialisation and content negotiation</h1>
 
           <p class="body-l" property="description">One graph written as Turtle, N-Triples, RDF/XML, JSON-LD and RDFa, and one URI serving different formats on request.</p>
@@ -79,7 +79,7 @@
             <li property="teaches">read the response headers that say what came back</li>
           </ul>
 
-          <p>You’ll need a terminal with <code>curl</code> for the last section, and Python with the <code>rdflib</code> package for one activity.</p>
+          <p>You’ll need a terminal with <code>curl</code> for the last section, and the <code>rdfpipe</code> command, which comes with Python’s <code>rdflib</code> package, for one activity.</p>
 
           <h2 id="one-graph">One graph, many formats</h2>
 
@@ -367,7 +367,9 @@ _:result &lt;http://qudt.org/schema/qudt/hasUnit&gt; &lt;http://qudt.org/vocab/u
           <p>Because both formats carry the same triples, a program can read one and write the other. Save the XML above as <code>corby.rdf</code>, then run:</p>
 
           <pre><code>pip install rdflib
-python3 -c "import rdflib, sys; print(rdflib.Graph().parse(sys.argv[1]).serialize(format='turtle'))" corby.rdf</code></pre>
+rdfpipe -o turtle corby.rdf</code></pre>
+
+          <p>Installing <code>rdflib</code> also installs <code>rdfpipe</code>, a command that reads RDF in one format and writes it in another. <code>-o turtle</code> chooses the format to write. The format to read is worked out from the file’s <code>.rdf</code> extension, and <code>-i</code> sets it when the name gives no clue.</p>
 
           <p>Here is what it prints:</p>
 
@@ -396,13 +398,14 @@ python3 -c "import rdflib, sys; print(rdflib.Graph().parse(sys.argv[1]).serializ
             <span class="anchor-uri">This activity’s URI: <a href="#activity-3">#activity-3</a></span>
             <meta property="learningResourceType" content="Activity">
             <div property="description">
-              <p>Convert <code>corby.rdf</code> to N-Triples by changing <code>format='turtle'</code> to <code>format='nt'</code> in the command above. Count the lines, and compare them with the N-Triples in this module.</p>
+              <p>Convert <code>corby.rdf</code> to N-Triples by changing <code>-o turtle</code> to <code>-o nt</code> in the command above. Count the lines, and compare them with the N-Triples in this module.</p>
             </div>
 
             <details class="details">
               <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
               <div class="details__text">
                 <p>You get ten lines, matching the ten triples above. They may come out in a different order, and the blank node gets a generated label in place of <code>_:result</code>, but every triple is there. Turtle, N-Triples and RDF/XML have written down one graph three ways.</p>
+                <p>You may also see a warning that N-Triples is always written as UTF-8. That’s <code>rdflib</code> telling you how it wrote the file, and the output is correct.</p>
               </div>
             </details>
           </section>
@@ -779,7 +782,7 @@ content-type: application/json
             <li>one URI can serve several formats, chosen with the <code>Accept</code> header and confirmed by <code>content-type</code></li>
           </ul>
 
-          <p>Module 5 asks questions of graphs like this one with SPARQL.</p>
+          <p>Module 5 reads the vocabularies behind graphs like this one, so you can describe things of your own with them.</p>
 
           <nav class="pagination" aria-label="Pagination">
             <div class="pagination__prev">
@@ -788,9 +791,11 @@ content-type: application/json
                 Module 3: Triples and vocabularies
               </a>
             </div>
-            <div class="pagination__upcoming">
-              <span class="pagination__label">Next, coming soon</span>
-              <strong>Module 5: Querying with SPARQL</strong>
+            <div class="pagination__next">
+              <a class="pagination__link" href="../reading-a-vocabulary/" rel="next">
+                <span class="pagination__label">Next</span>
+                Module 5: Reading a vocabulary
+              </a>
             </div>
           </nav>
         </div>

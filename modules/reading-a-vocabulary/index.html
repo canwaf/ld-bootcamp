@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Module 5: Reading a vocabulary – Linked Data Bootcamp</title>
+  <meta name="description" content="Looking up a term, telling classes, properties and concepts apart, and predicting what a property’s domain and range say about your data.">
+  <link rel="stylesheet" href="../../assets/bootcamp.css">
+</head>
+<body vocab="https://schema.org/" prefix="dct: http://purl.org/dc/terms/">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="header">
+    <div class="width-container header__container">
+      <a href="../../" class="header__service">
+        <svg class="header__mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <line x1="5" y1="18" x2="12" y2="6" stroke="currentColor" stroke-width="2"/>
+          <line x1="12" y1="6" x2="19" y2="18" stroke="currentColor" stroke-width="2"/>
+          <line x1="5" y1="18" x2="19" y2="18" stroke="currentColor" stroke-width="2"/>
+          <circle cx="12" cy="6" r="3.5" fill="currentColor"/>
+          <circle cx="5" cy="18" r="3.5" fill="currentColor"/>
+          <circle cx="19" cy="18" r="3.5" fill="currentColor"/>
+        </svg>Linked Data Bootcamp
+      </a>
+    </div>
+  </header>
+
+  <div class="width-container">
+    <div class="phase-banner">
+      <p><strong class="tag">Beta</strong>This is a new course. Quizzes are marked in your browser as you answer.</p>
+    </div>
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="../../">Learn Linked Data</a></li>
+        <li><a href="../../#contents">Course contents</a></li>
+      </ol>
+    </nav>
+
+    <main class="main-wrapper" id="main-content" about="" typeof="LearningResource">
+      <link property="isPartOf" href="../../">
+      <meta property="position" content="5">
+      <meta property="learningResourceType" content="Module">
+      <meta property="inLanguage" content="en-GB">
+      <meta property="dct:modified" content="2026-10-29">
+      <link property="license dct:license" href="https://creativecommons.org/publicdomain/zero/1.0/">
+
+      <div class="grid-row">
+        <div class="grid-column-two-thirds">
+          <span class="caption-l">Module 5 of 9</span>
+          <h1 property="name dct:title">Reading a vocabulary</h1>
+
+          <p class="body-l" property="description">Looking up a term, telling classes, properties and concepts apart, and predicting what a property’s domain and range say about your data.</p>
+
+          <nav class="contents-list" aria-label="Contents">
+            <h2 class="contents-list__title">Contents</h2>
+            <ol>
+              <li><a href="#outcomes">What you’ll learn</a></li>
+              <li><a href="#following">A term is a URI</a></li>
+              <li><a href="#reading">What a term says about itself</a></li>
+              <li><a href="#pages">The page and the triples</a></li>
+              <li><a href="#files">Reading a vocabulary file</a></li>
+              <li><a href="#hierarchy">Climbing the class hierarchy</a></li>
+              <li><a href="#kinds">Classes, properties and concepts</a></li>
+              <li><a href="#domain-range">Domain and range draw conclusions</a></li>
+              <li><a href="#hints">Hints that draw no conclusions</a></li>
+              <li><a href="#quiz">Check your understanding</a></li>
+              <li><a href="#summary">Summary</a></li>
+            </ol>
+          </nav>
+
+          <h2 id="outcomes">What you’ll learn</h2>
+
+          <p>By the end of this module you’ll be able to:</p>
+          <ul>
+            <li property="teaches">look up a term and find its label, its definition and the vocabulary that defines it</li>
+            <li property="teaches">read a term’s documentation page and its triples, and match each field to its predicate</li>
+            <li property="teaches">follow a class up its hierarchy to everything its instances also are</li>
+            <li property="teaches">say whether a term is a class, a property or a SKOS concept</li>
+            <li property="teaches">predict the types your data acquires from the properties it uses</li>
+            <li property="teaches">tell a rule about a property apart from a hint</li>
+          </ul>
+
+          <p>You’ll need a web browser, a terminal with <code>curl</code>, and the <code>rdfpipe</code> command that comes with the <code>rdflib</code> package from Module 4.</p>
+
+          <div class="inset-text">
+            <p>SKOS, SOSA and Dublin Core are quoted from the files their publishers serve today. The Defra terms are quoted from version 0.1.0 of <a href="https://github.com/agrimetrics/defra-ontology">Defra’s domain model</a>, which its authors describe as a work in progress, so details may change. URIs starting <code>ex:</code> are made up for this module.</p>
+          </div>
+
+          <h2 id="following">A term is a URI</h2>
+
+          <p>In Module 3 you met the vocabularies that answer each kind of question: SKOS for concepts, SOSA for observations, Dublin Core for publishing, and Defra’s own terms for regulation and water. Every predicate and class in them is a URI. So, like the sampling point in Module 1, a term can be looked up, and looking it up should tell you what it means.</p>
+
+          <p>That is how you read a vocabulary: one term at a time, by following its URI.</p>
+
+          <h3>SOSA: a term served as Turtle</h3>
+
+          <p>Ask for the class <code>sosa:FeatureOfInterest</code> in Turtle. <code>-L</code> tells <code>curl</code> to follow redirects, which most vocabulary URIs use:</p>
+
+          <pre><code>curl -L -H "Accept: text/turtle" http://www.w3.org/ns/sosa/FeatureOfInterest</code></pre>
+
+          <p>What comes back is the whole SOSA vocabulary, a few hundred triples. The W3C serves the same file at every SOSA term’s URI, and you find the term you asked for inside it:</p>
+
+          <pre><code>sosa:FeatureOfInterest a rdfs:Class ; a owl:Class ;
+  rdfs:label "Feature Of Interest"@en ;
+  skos:definition "The thing whose property is being estimated or calculated in the course of an Observation to arrive at a Result or whose property is being manipulated by an Actuator, or which is being sampled or transformed in an act of Sampling."@en ;
+  rdfs:comment "The thing whose property is being estimated or calculated in the course of an Observation to arrive at a Result or whose property is being manipulated by an Actuator, or which is being sampled or transformed in an act of Sampling."@en ;
+  skos:example "When measuring the height of a tree, the height is the observed ObservableProperty, 20m may be the Result of the Observation, and the tree is the FeatureOfInterest. A window is a FeatureOfInterest for an automatic window control Actuator."@en ;
+  rdfs:isDefinedBy sosa: .</code></pre>
+
+          <p>This is ordinary Turtle, written by the W3C. The vocabulary describes itself with triples, using the same predicates you’ve used to describe sampling points.</p>
+
+          <h3>Dublin Core: a term behind several redirects</h3>
+
+          <pre><code>curl -L -H "Accept: text/turtle" http://purl.org/dc/terms/title</code></pre>
+
+          <p>This one passes through several redirects before it reaches the Dublin Core terms file. Inside it:</p>
+
+          <pre><code>dcterms:title
+    dcterms:issued "2008-01-14"^^&lt;http://www.w3.org/2001/XMLSchema#date&gt; ;
+    a rdf:Property ;
+    rdfs:comment "A name given to the resource."@en ;
+    rdfs:isDefinedBy &lt;http://purl.org/dc/terms/&gt; ;
+    rdfs:label "Title"@en ;
+    rdfs:range rdfs:Literal ;
+    rdfs:subPropertyOf &lt;http://purl.org/dc/elements/1.1/title&gt; .</code></pre>
+
+          <p>The file writes the prefix as <code>dcterms:</code>, where this course writes <code>dct:</code>. Both stand for <code><span class="nw">http://purl.org/</span><wbr><span class="nw">dc/</span><wbr><span class="nw">terms/</span></code>, so they name the same terms. As Module 2 said, a prefix is only shorthand, and the full URI is what counts.</p>
+
+          <h3>SKOS: a hash URI, served as RDF/XML</h3>
+
+          <p>SKOS terms are hash URIs, such as <code><span class="nw">http://</span><wbr><span class="nw">www.w3.org/</span><wbr><span class="nw">2004/</span><wbr><span class="nw">02/</span><wbr><span class="nw">skos/</span><wbr><span class="nw">core#Concept</span></code>. A client never sends the part after the <code>#</code> to the server. It asks for the document and looks for the part itself, exactly as with <code><span class="nw">AN-CORBY#Geometry</span></code> in Module 2. So any SKOS term gets you the whole SKOS document.</p>
+
+          <pre><code>curl -i -L -H "Accept: text/turtle" "http://www.w3.org/2004/02/skos/core#Concept"</code></pre>
+
+          <p>Read the last <code>content-type</code> header: it says <code>application/rdf+xml</code>. You asked for Turtle, and SKOS is only published as RDF/XML, so that’s what came back. Module 4 showed how to deal with that: <code>rdfpipe</code> converts it, and it reads straight from a URL. <code>-i xml</code> says the input is RDF/XML, as the header told you:</p>
+
+          <pre><code>rdfpipe -i xml -o turtle http://www.w3.org/2004/02/skos/core &gt; skos.ttl</code></pre>
+
+          <p>Open <code>skos.ttl</code> and search for the block that starts with <code>skos:Concept</code>. Turtle keeps everything said about one subject together, from the subject to the full stop, so that block is the whole of what SKOS says about the term:</p>
+
+          <pre><code>skos:Concept a owl:Class ;
+    rdfs:label "Concept"@en ;
+    rdfs:isDefinedBy &lt;http://www.w3.org/2004/02/skos/core&gt; ;
+    skos:definition "An idea or notion; a unit of thought."@en .</code></pre>
+
+          <h2 id="reading">What a term says about itself</h2>
+
+          <p>The three terms were published by different organisations in two formats, and they all answer the same handful of questions. These are the predicates to look for:</p>
+
+          <dl class="summary-list">
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>rdfs:label</code></dt>
+              <dd class="summary-list__value">The term’s name, for people: <em>Feature Of Interest</em>.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>rdfs:comment</code> or <code>skos:definition</code></dt>
+              <dd class="summary-list__value">What it means. This is the part to read before you use a term. SOSA gives both; SKOS gives a definition; Dublin Core gives a comment.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>rdfs:isDefinedBy</code></dt>
+              <dd class="summary-list__value">The vocabulary the term belongs to, as a URI you can follow to read the rest of it.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>a</code></dt>
+              <dd class="summary-list__value">What kind of term it is: a class, or one of the kinds of property. <a href="#kinds">Classes, properties and concepts</a> covers how to tell.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>rdfs:subClassOf</code> or <code>rdfs:subPropertyOf</code></dt>
+              <dd class="summary-list__value">Where it sits in a hierarchy: the more general class or property it narrows.</dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>rdfs:domain</code> and <code>rdfs:range</code></dt>
+              <dd class="summary-list__value">For a property, what its subjects and objects are. <a href="#domain-range">Domain and range draw conclusions</a> covers what these do to your data.</dd>
+            </div>
+          </dl>
+
+          <h2 id="pages">The page and the triples</h2>
+
+          <p>Most vocabularies are published twice: as triples, for programs, and as a documentation page, for people. The Dublin Core terms are listed on the <a href="https://www.dublincore.org/specifications/dublin-core/dcmi-terms/">DCMI Metadata Terms</a> page, SOSA’s terms in the <a href="https://www.w3.org/TR/vocab-ssn/#SOSAhasFeatureOfInterest">Semantic Sensor Network Ontology</a> specification, and SKOS’s in the <a href="https://www.w3.org/2004/02/skos/core.html">SKOS namespace document</a>. Each entry on these pages is a term’s triples laid out as a form, with a field for each predicate.</p>
+
+          <p>Here is the entry for <code>title</code> on the DCMI page, set against the triples you fetched:</p>
+
+          <table class="table">
+            <caption class="table__caption">The DCMI page’s entry for <code>title</code>, field by field</caption>
+            <thead>
+              <tr><th scope="col">Field on the page</th><th scope="col">Value</th><th scope="col">Predicate in the file</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>URI</td><td><code><span class="nw">http://purl.org/</span><wbr><span class="nw">dc/</span><wbr><span class="nw">terms/</span><wbr><span class="nw">title</span></code></td><td>the subject of every triple in the block</td></tr>
+              <tr><td>Type</td><td>Property</td><td><code>a rdf:Property</code></td></tr>
+              <tr><td>Label</td><td>Title</td><td><code>rdfs:label</code></td></tr>
+              <tr><td>Definition</td><td>A name given to the resource.</td><td><code>rdfs:comment</code></td></tr>
+              <tr><td>Has Range</td><td><code>rdfs:Literal</code></td><td><code>rdfs:range</code></td></tr>
+              <tr><td>Subproperty of</td><td>Title, in the older <code>/elements/1.1/</code> namespace</td><td><code>rdfs:subPropertyOf</code></td></tr>
+            </tbody>
+          </table>
+
+          <p>The fields are the predicates, renamed for people. The page and the triples say the same things, so once you know which field is which predicate you can read either one.</p>
+
+          <h3>When one word changes the predicate</h3>
+
+          <p>The same page’s entry for <code>publisher</code> has a field called <em>Range Includes</em>, where <code>title</code> has <em>Has Range</em>. The different wording is a different predicate: <em>Has Range</em> is <code>rdfs:range</code>, and <em>Range Includes</em> is <code>dcam:rangeIncludes</code>. SOSA’s entry for <code><span class="nw">sosa:</span><wbr><span class="nw">hasFeatureOfInterest</span></code> does the same, with <em>Domain Includes</em> and <em>Range Includes</em> for <code>schema:domainIncludes</code> and <code>schema:rangeIncludes</code>. <a href="#hints">Hints that draw no conclusions</a> explains why that one word matters for your data.</p>
+
+          <h3>When the page sends you elsewhere</h3>
+
+          <p>The SKOS namespace document gives the definition of <code>skos:Concept</code> as a link to section 3 of the SKOS Reference, a separate document. The triples carry the definition itself: <em>An idea or notion; a unit of thought.</em> The page also lists <code>skos:notation</code> simply as a property, where the triples type it as an <code>owl:DatatypeProperty</code>. When a page and its triples differ in detail, read the triples: they are what your data’s meaning rests on.</p>
+
+          <h3>When there is no page</h3>
+
+          <p>Defra’s domain model has no documentation page yet. Its definitions exist only as Turtle files. Once you can match fields to predicates, that is no obstacle, because Turtle already lays a term out like an entry: the term’s URI first, then one predicate and its value on each line, until the full stop. <a href="#files">Reading a vocabulary file</a> reads the Defra terms that way.</p>
+
+          <section class="activity" id="activity-1" property="hasPart" typeof="LearningResource" resource="#activity-1">
+            <span class="activity__label">Activity 1</span>
+            <h3 property="name">Look up three terms</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-1">#activity-1</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>Look up each of these terms twice: on its documentation page, and in its vocabulary file. For each one, write down its label, its definition, the vocabulary that defines it, and what kind of term it is. Then note anything the page and the file say differently.</p>
+              <ol>
+                <li><code>skos:notation</code>, in the SKOS namespace document and your <code>skos.ttl</code></li>
+                <li><code>sosa:ObservableProperty</code>, in the Semantic Sensor Network Ontology specification and the SOSA Turtle you fetched</li>
+                <li><code>dct:publisher</code>, on the DCMI Metadata Terms page and the Dublin Core Turtle you fetched</li>
+              </ol>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <ol>
+                  <li><strong>notation</strong>: “a string of characters such as "T58.5" or "303.4833" used to uniquely identify a concept within the scope of a given concept scheme.” Defined by SKOS. It’s an <code>owl:DatatypeProperty</code>. A scope note adds that a notation is, by convention, a typed literal. The page links to section 6 of the SKOS Reference for the definition and lists the term only as a property, so the definition and the kind of property come from the file.</li>
+                  <li><strong>Observable Property</strong>: “An observable quality (property, characteristic) of a FeatureOfInterest.” Defined by SOSA. It’s a class, typed as both <code>rdfs:Class</code> and <code>owl:Class</code>. Its example mentions “the depth of a water body”. The page and the file agree.</li>
+                  <li><strong>Publisher</strong>: “An entity responsible for making the resource available.” Defined by Dublin Core. It’s an <code>rdf:Property</code>. The page shows <em>Range Includes</em> Agent, which the file writes as <code>dcam:rangeIncludes dcterms:Agent</code>: a hint, as <a href="#hints">Hints that draw no conclusions</a> explains.</li>
+                </ol>
+                <p>Module 1 said a notation is the code a system matches on, kept apart from the label. SKOS’s own definition says the same thing, and now you can quote it.</p>
+              </div>
+            </details>
+          </section>
+
+
+          <h2 id="files">Reading a vocabulary file</h2>
+
+          <p>Defra’s domain model defines its terms under <code>environment.data.gov.uk</code>, in three namespaces:</p>
+
+          <dl class="summary-list summary-list--narrow-key">
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>defra-core:</code></dt>
+              <dd class="summary-list__value"><code><span class="nw">http://environment.data.gov.uk/</span><wbr><span class="nw">ontology/</span><wbr><span class="nw">core/</span></code></dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>defra-reg:</code></dt>
+              <dd class="summary-list__value"><code><span class="nw">http://environment.data.gov.uk/</span><wbr><span class="nw">ontology/</span><wbr><span class="nw">regulation/</span></code></dd>
+            </div>
+            <div class="summary-list__row">
+              <dt class="summary-list__key"><code>defra-water:</code></dt>
+              <dd class="summary-list__value"><code><span class="nw">http://environment.data.gov.uk/</span><wbr><span class="nw">ontology/</span><wbr><span class="nw">water/</span></code></dd>
+            </div>
+          </dl>
+
+          <p>Follow one of these terms today and you get <code>404 Not Found</code>: the terms have been minted, but nothing answers at their addresses yet. For now, the definitions are in three Turtle files on GitHub. Download them:</p>
+
+          <pre><code>curl -O https://raw.githubusercontent.com/agrimetrics/defra-ontology/main/defra-core-ontology.ttl
+curl -O https://raw.githubusercontent.com/agrimetrics/defra-ontology/main/defra-regulation.ttl
+curl -O https://raw.githubusercontent.com/agrimetrics/defra-ontology/main/defra-water.ttl</code></pre>
+
+          <p>The URI and the file are separate things. The URI is the term’s identity, and it stays the same whether or not it can be looked up yet. The file is just where you can read the definition for now. Your data uses the URI.</p>
+
+          <h3>The ontology describes itself</h3>
+
+          <p>A vocabulary defined with OWL is usually called an <strong>ontology</strong>. Each file starts with a description of the ontology as a whole. Here is the start of <code>defra-water.ttl</code>:</p>
+
+          <pre><code>&lt;http://environment.data.gov.uk/ontology/water&gt;
+    a owl:Ontology ;
+    dcterms:title "DEFRA Water Ontology"@en ;
+    dcterms:description "Water reusable classes and properties for DEFRA Linked Data APIs, covering WaterBody, Catchment, DischargePoint, EffluentType, WaterDischargeActivity."@en ;
+    dcterms:creator "Department for Environment, Food and Rural Affairs"@en ;
+    dcterms:publisher "Department for Environment, Food and Rural Affairs"@en ;
+    dcterms:license &lt;http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/&gt; ;
+    dcterms:created "2026-07-01"^^xsd:date ;
+    owl:versionInfo "0.1.0" ;
+    rdfs:seeAlso &lt;http://environment.data.gov.uk/catalog&gt; .</code></pre>
+
+          <p>These are the Dublin Core predicates from Module 3, now describing a vocabulary in place of a dataset: its title, who published it, its licence and its version.</p>
+
+          <h3>A term, in the file</h3>
+
+          <p>Further down is the class you’ll use in Module 6 for a discharge permit:</p>
+
+          <pre><code>defra-water:WaterDischargePermit
+    a owl:Class ;
+    rdfs:label "Water Discharge Permit"@en ;
+    rdfs:comment "A permit authorising the discharge of effluent to controlled waters, subject to conditions."@en ;
+    rdfs:subClassOf defra-reg:Permit .</code></pre>
+
+          <p>It has a label, a definition, a type and a superclass. Read it as you read the DCMI page: the subject is the term, and each line is a field. Defra publishes no page for this term, so this block is its documentation. To find any Defra term, open the file in a text editor or on GitHub and search for its local name, such as <code>WaterDischargePermit</code>.</p>
+
+          <h3>When a term doesn’t say everything</h3>
+
+          <p>Compare it with the SKOS, SOSA and Dublin Core terms and three things are missing or out of step. Each one is worth knowing how to handle, because you’ll meet them in other vocabularies too.</p>
+
+          <ul>
+            <li><strong>No <code>rdfs:isDefinedBy</code>.</strong> No Defra term says which ontology defines it. The URIs still tell you: a term starting <code><span class="nw">http://environment.data.gov.uk/</span><wbr><span class="nw">ontology/</span><wbr><span class="nw">water/</span></code> belongs to the ontology <code><span class="nw">http://environment.data.gov.uk/</span><wbr><span class="nw">ontology/</span><wbr><span class="nw">water</span></code>, the one whose header you just read.</li>
+            <li><strong>A description that disagrees with the triples.</strong> The water ontology’s description lists DischargePoint among the things it covers. In fact <code>DischargePoint</code> is defined in the regulation ontology, so its URI is <code>defra-reg:DischargePoint</code>, and the water file defines no <code>EffluentType</code> or <code>WaterDischargeActivity</code> yet. When a description and the definitions disagree, go by the definitions: they are what your data will use.</li>
+            <li><strong>Terms with no definition.</strong> <code>defra-core:Site</code> has a label and a superclass but no comment, and <code>defra-reg:Driver</code> has the comment “To be defined.” When the definition is missing, read what is there: the superclass, and the properties that point at the term. They tell you a lot, as the rest of this module shows.</li>
+          </ul>
+
+          <section class="activity" id="activity-2" property="hasPart" typeof="LearningResource" resource="#activity-2">
+            <span class="activity__label">Activity 2</span>
+            <h3 property="name">Read two Defra terms</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-2">#activity-2</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>Find each of these in <code>defra-regulation.ttl</code>. Write down its label, its definition, what kind of term it is, and anything else it says about itself.</p>
+              <ol>
+                <li><code>defra-reg:DischargePoint</code></li>
+                <li><code>defra-reg:permitHolder</code></li>
+              </ol>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <pre><code>defra-reg:DischargePoint a owl:Class ;
+    rdfs:label "Discharge Point"@en ;
+    rdfs:comment "A point at which a discharge enters, or is authorised to enter, the environment."@en ;
+    rdfs:subClassOf defra-core:Site .
+
+defra-reg:permitHolder a owl:ObjectProperty ;
+    rdfs:label "permit holder"@en ;
+    rdfs:domain defra-reg:Permit ;
+    rdfs:range defra-core:Party ;
+     .</code></pre>
+                <ol>
+                  <li><strong>Discharge Point</strong> is a class: “A point at which a discharge enters, or is authorised to enter, the environment.” Its superclass is <code>defra-core:Site</code>.</li>
+                  <li><strong>permit holder</strong> is an object property, so its object is a link to another thing. It has no comment, but its domain and range say it goes from a <code>defra-reg:Permit</code> to a <code>defra-core:Party</code>, which tells you nearly all you need.</li>
+                </ol>
+                <p>The lone full stop on its own line after <code>permitHolder</code> is how the file is written. Turtle allows a <code>;</code> with nothing after it, so the parser reads it without complaint.</p>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="hierarchy">Climbing the class hierarchy</h2>
+
+          <p><code>rdfs:subClassOf</code> says that every instance of one class is also an instance of another. Every water discharge permit is a permit. Follow the superclasses up from a class, one file at a time, and you reach everything its instances are:</p>
+
+          <figure class="figure" id="figure-hierarchy">
+            <div class="figure__scroll">
+              <svg viewBox="0 0 720 360" role="img" aria-labelledby="hierarchy-title hierarchy-desc" focusable="false">
+                <title id="hierarchy-title">Two class hierarchies from Defra’s domain model</title>
+                <desc id="hierarchy-desc">On the left, defra-water:WaterDischargePermit is rdfs:subClassOf defra-reg:Permit, which is rdfs:subClassOf dcat:Resource. On the right, defra-reg:DischargePoint is rdfs:subClassOf defra-core:Site, which is rdfs:subClassOf geo:Feature.</desc>
+                <defs>
+                  <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                    <path class="graph-arrowhead" d="M0 0 L10 5 L0 10 z"/>
+                  </marker>
+                </defs>
+
+                <line class="graph-edge" x1="190" y1="88" x2="190" y2="160" marker-end="url(#arrow)"/>
+                <text class="graph-label" x="200" y="129">rdfs:subClassOf</text>
+
+                <line class="graph-edge" x1="190" y1="218" x2="190" y2="290" marker-end="url(#arrow)"/>
+                <text class="graph-label" x="200" y="259">rdfs:subClassOf</text>
+
+                <line class="graph-edge" x1="530" y1="88" x2="530" y2="160" marker-end="url(#arrow)"/>
+                <text class="graph-label" x="540" y="129">rdfs:subClassOf</text>
+
+                <line class="graph-edge" x1="530" y1="218" x2="530" y2="290" marker-end="url(#arrow)"/>
+                <text class="graph-label" x="540" y="259">rdfs:subClassOf</text>
+
+                <ellipse class="graph-uri" cx="190" cy="60" rx="168" ry="28"/>
+                <text class="graph-text" x="190" y="65" text-anchor="middle">defra-water:WaterDischargePermit</text>
+
+                <ellipse class="graph-uri" cx="190" cy="190" rx="100" ry="28"/>
+                <text class="graph-text" x="190" y="195" text-anchor="middle">defra-reg:Permit</text>
+
+                <ellipse class="graph-uri" cx="190" cy="320" rx="90" ry="28"/>
+                <text class="graph-text" x="190" y="325" text-anchor="middle">dcat:Resource</text>
+
+                <ellipse class="graph-uri" cx="530" cy="60" rx="130" ry="28"/>
+                <text class="graph-text" x="530" y="65" text-anchor="middle">defra-reg:DischargePoint</text>
+
+                <ellipse class="graph-uri" cx="530" cy="190" rx="96" ry="28"/>
+                <text class="graph-text" x="530" y="195" text-anchor="middle">defra-core:Site</text>
+
+                <ellipse class="graph-uri" cx="530" cy="320" rx="80" ry="28"/>
+                <text class="graph-text" x="530" y="325" text-anchor="middle">geo:Feature</text>
+              </svg>
+            </div>
+            <figcaption>The permit and the discharge point, each with the classes above it. Each arrow is one <code>rdfs:subClassOf</code> triple, and each comes from a different file.</figcaption>
+          </figure>
+
+          <p>Each step is in a different place. <code>WaterDischargePermit</code> is defined in the water ontology, <code>Permit</code> in the regulation ontology, and <code>dcat:Resource</code> in DCAT. The discharge point climbs from regulation to core to GeoSPARQL. So a discharge point is a site and a <code>geo:Feature</code>, the same class as <code>AN-CORBY</code> in Module 3, which is why a discharge point can have a location on a map.</p>
+
+          <p>Conclusions go up the hierarchy and never down. Every water discharge permit is a permit, but a permit isn’t necessarily a water discharge permit. If your data should say the narrower class, it has to state it.</p>
+
+          <section class="activity" id="activity-3" property="hasPart" typeof="LearningResource" resource="#activity-3">
+            <span class="activity__label">Activity 3</span>
+            <h3 property="name">Climb from Organisation</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-3">#activity-3</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <p property="description">The holder of a permit is often an organisation. Using <code>defra-core-ontology.ttl</code>, list every class that an instance of <code>defra-core:Organisation</code> also belongs to.</p>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <pre><code>defra-core:Organisation a owl:Class ;
+    rdfs:subClassOf defra-core:Party, org:Organization, foaf:Organization ;
+    …
+
+defra-core:Party a owl:Class ;
+    rdfs:subClassOf foaf:Agent, prov:Agent ;
+    …</code></pre>
+                <p>An organisation is also a <code>defra-core:Party</code>, an <code>org:Organization</code> and a <code>foaf:Organization</code>, and through <code>Party</code> it is also a <code>foaf:Agent</code> and a <code>prov:Agent</code>.</p>
+                <p>A class can have several superclasses, just as a thing can have several types. That’s five classes from three other vocabularies, so any program that understands FOAF, PROV or the W3C Organization ontology already knows something about a Defra permit holder. And those vocabularies have hierarchies of their own if you keep following.</p>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="kinds">Classes, properties and concepts</h2>
+
+          <p>Every term you look up is one of three kinds of thing, and the kind decides where it goes in a triple.</p>
+
+          <div class="table-wrap">
+            <table class="table">
+              <caption class="table__caption">How to tell what kind of term you’re reading</caption>
+              <thead>
+                <tr><th scope="col">Kind</th><th scope="col">Its type says</th><th scope="col">Where it goes</th><th scope="col">Examples</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Class</td><td><code>owl:Class</code> or <code>rdfs:Class</code></td><td>The object of <code>a</code></td><td><code>defra-reg:Permit</code>, <code>sosa:FeatureOfInterest</code></td></tr>
+                <tr><td>Object property</td><td><code>owl:ObjectProperty</code></td><td>The predicate, with a link as its object</td><td><code>defra-reg:permitSite</code>, <code>sosa:hasSample</code></td></tr>
+                <tr><td>Datatype property</td><td><code>owl:DatatypeProperty</code></td><td>The predicate, with a literal as its object</td><td><code>defra-core:identifierValue</code>, <code>skos:notation</code></td></tr>
+                <tr><td>Other property</td><td><code>rdf:Property</code> or <code>owl:AnnotationProperty</code></td><td>The predicate</td><td><code>dct:title</code>, <code>skos:prefLabel</code></td></tr>
+                <tr><td>Concept</td><td><code>skos:Concept</code></td><td>The object of a property whose range is <code>skos:Concept</code></td><td><code><span class="nw">sampling-point-type:</span><wbr><span class="nw">SA</span></code>, <code>determinand:0111</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>There’s a naming habit that helps: class names start with a capital letter (<code>Permit</code>) and property names with a small one (<code>permitSite</code>). It’s a habit, not a rule, so check the type when it matters.</p>
+
+          <h3>Schema and controlled values</h3>
+
+          <p>Classes and properties are the <strong>schema</strong>: the kinds of thing there are and the ways they can be related. An ontology defines them, and it rarely changes.</p>
+
+          <p>Concepts are <strong>controlled values</strong>: the determinands, the sampling point types, the kinds of permit. They aren’t defined in an ontology at all. Each one is an instance of <code>skos:Concept</code>, published in a concept scheme that is listed in a catalogue as a dataset, as in Module 3. A new kind of sampling point is a new row of data in its scheme, and nobody has to edit an ontology.</p>
+
+          <p>The two meet in properties like <code><span class="nw">defra-core:</span><wbr><span class="nw">hasClassification</span></code>. The ontology says its object is a concept. Which concepts exist is up to the scheme.</p>
+
+          <section class="activity" id="activity-4" property="hasPart" typeof="LearningResource" resource="#activity-4">
+            <span class="activity__label">Activity 4</span>
+            <h3 property="name">Sort the terms</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-4">#activity-4</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>Sort these into classes, object properties, datatype properties and concepts. Use the Defra files and Module 3 to check.</p>
+              <ol>
+                <li><code>defra-reg:Limit</code></li>
+                <li><code>defra-reg:upperBound</code></li>
+                <li><code>defra-reg:limitStatement</code></li>
+                <li><code>determinand:0111</code></li>
+                <li><code>sosa:ObservableProperty</code></li>
+                <li><code><span class="nw">defra-core:</span><wbr><span class="nw">identifierIssuedDate</span></code></li>
+                <li><code><span class="nw">sampling-point-type:</span><wbr><span class="nw">SA</span></code></li>
+              </ol>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <ul>
+                  <li><strong>Classes:</strong> <code>defra-reg:Limit</code> and <code>sosa:ObservableProperty</code>. The name <em>ObservableProperty</em> sounds like a property, but its type is <code>owl:Class</code>: it’s the class of things that can be observed, such as determinands.</li>
+                  <li><strong>Object property:</strong> <code>defra-reg:upperBound</code>, whose range is <code>qudt:QuantityValue</code>, a thing with a value and a unit like Module 3’s result.</li>
+                  <li><strong>Datatype properties:</strong> <code>defra-reg:limitStatement</code>, a string, and <code><span class="nw">defra-core:</span><wbr><span class="nw">identifierIssuedDate</span></code>, an <code>xsd:date</code>.</li>
+                  <li><strong>Concepts:</strong> <code>determinand:0111</code> and <code><span class="nw">sampling-point-type:</span><wbr><span class="nw">SA</span></code>. Neither appears in any ontology; both are data in a concept scheme.</li>
+                </ul>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="domain-range">Domain and range draw conclusions</h2>
+
+          <p>Module 3 said a property’s range says what its object should be. In RDFS it’s stronger than that. The <strong>domain</strong> and <strong>range</strong> of a property are rules for drawing conclusions:</p>
+          <ul>
+            <li>if a property has a domain, the subject of any triple that uses it <em>is</em> an instance of that class</li>
+            <li>if a property has a range, the object of any triple that uses it <em>is</em> an instance of that class</li>
+          </ul>
+
+          <p>Here is the property that links a discharge point to the sampling point that monitors it:</p>
+
+          <pre><code>defra-water:monitoredAt
+    a owl:ObjectProperty ;
+    rdfs:subPropertyOf dcterms:relation ;
+    rdfs:label "monitored at"@en ;
+    rdfs:comment "Relates a discharge point to the sampling point at which its discharges are monitored. Via a permit's discharge points, this says how the permit is monitored."@en ;
+    rdfs:domain defra-reg:DischargePoint ;
+    rdfs:range sosa:FeatureOfInterest .</code></pre>
+
+          <p>Now take one triple that uses it. Nothing else is said about <code>ex:discharge-point</code>:</p>
+
+          <pre><code>ex:discharge-point defra-water:monitoredAt &lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY&gt; .</code></pre>
+
+          <p>That one triple makes all of these true:</p>
+
+          <div class="table-wrap">
+            <table class="table table--uris table--triples">
+              <caption class="table__caption">What one <code>monitoredAt</code> triple makes true</caption>
+              <thead>
+                <tr><th scope="col">Subject</th><th scope="col">Predicate</th><th scope="col">Object</th><th scope="col">Because</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code><span class="nw">ex:</span><wbr><span class="nw">discharge-point</span></code></td><td><code>a</code></td><td><code><span class="nw">defra-reg:</span><wbr><span class="nw">DischargePoint</span></code></td><td>the domain</td></tr>
+                <tr><td><code><span class="nw">ex:</span><wbr><span class="nw">discharge-point</span></code></td><td><code>a</code></td><td><code>defra-core:Site</code></td><td>the hierarchy</td></tr>
+                <tr><td><code><span class="nw">ex:</span><wbr><span class="nw">discharge-point</span></code></td><td><code>a</code></td><td><code>geo:Feature</code></td><td>the hierarchy</td></tr>
+                <tr><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></td><td><code>a</code></td><td><code><span class="nw">sosa:</span><wbr><span class="nw">FeatureOfInterest</span></code></td><td>the range</td></tr>
+                <tr><td><code><span class="nw">ex:</span><wbr><span class="nw">discharge-point</span></code></td><td><code>dct:relation</code></td><td><code><span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></td><td>the superproperty</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>The last row comes from <code>rdfs:subPropertyOf</code>, which works for properties the way <code>rdfs:subClassOf</code> works for classes: anything related by <code>monitoredAt</code> is also related by the broader <code>dct:relation</code>, so a program that only knows Dublin Core can still see the two are related.</p>
+
+          <p>The range agrees with the Environment Agency, which already types <code>AN-CORBY</code> as a <code><span class="nw">sosa:</span><wbr><span class="nw">FeatureOfInterest</span></code>. That’s the vocabulary working as intended: whatever the discharge point is monitored at is something that is observed.</p>
+
+          <h3>Whatever the author meant</h3>
+
+          <p>These conclusions follow from the triple, not from what its author had in mind. Suppose someone writes the link straight from a permit to the sampling point, skipping the discharge point:</p>
+
+          <pre><code>ex:permit defra-water:monitoredAt &lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY&gt; .</code></pre>
+
+          <p>The domain now makes the permit a discharge point, and so a site and a <code>geo:Feature</code>, as well as a permit: a permit with a place on a map. Nothing rejects the triple or warns about it. RDFS only ever adds conclusions; it doesn’t check data. Checking data against the shape you meant is a job for SHACL, in a later module.</p>
+
+          <p>That’s why reading a property’s domain and range comes before using it. They tell you what your data will say, whether you meant it to or not.</p>
+
+          <h3>A range with no domain</h3>
+
+          <p><code><span class="nw">defra-core:</span><wbr><span class="nw">hasClassification</span></code> has a range and no domain:</p>
+
+          <pre><code>defra-core:hasClassification a owl:ObjectProperty ;
+    rdfs:label "has classification"@en ;
+    rdfs:comment "Relates a resource to its classification, a resource can have multiple classifications."@en ;
+    rdfs:range skos:Concept ;
+     .</code></pre>
+
+          <p>With no domain, the property says nothing about its subject, so anything can be classified: a sampling point, a water body or a permit. The range makes every classification a <code>skos:Concept</code>. That conclusion is the one the property exists for: it guarantees a classification is a concept, with a notation, a label and a scheme, and never a typed-in string. It’s the fix for <em>River</em>, <em>river</em> and <em>Rivers</em> from Module 1, written as a rule.</p>
+
+          <h3>A domain that is one of two classes</h3>
+
+          <p>A condition on a permit puts a bound on something, and so does a limit. The property that names what is bounded has a domain written as a blank node:</p>
+
+          <pre><code>defra-reg:regulatedProperty a owl:ObjectProperty ;
+    rdfs:label "regulated property"@en ;
+    rdfs:comment "The observable property (substance, parameter) that this condition or limit places a bound on."@en ;
+    rdfs:domain [ a owl:Class ; owl:unionOf (defra-reg:Condition defra-reg:Limit) ] ;
+    rdfs:range sosa:ObservableProperty ;
+     .</code></pre>
+
+          <p>The blank node is a class with no name of its own: the <strong>union</strong> of <code>Condition</code> and <code>Limit</code>, meaning everything that is one or the other. <code>( )</code> is Turtle for a list.</p>
+
+          <pre><code>ex:condition defra-reg:regulatedProperty determinand:0111 .</code></pre>
+
+          <p>From this triple, <code>ex:condition</code> is a condition or a limit, but nothing says which. Neither <code>a defra-reg:Condition</code> nor <code>a defra-reg:Limit</code> follows. To know which, you need another triple, such as a permit’s <code>defra-reg:hasCondition</code>, whose range is <code>defra-reg:Condition</code>.</p>
+
+          <p>The range makes the determinand a <code>sosa:ObservableProperty</code>. It’s already a <code>skos:Concept</code>, and it can be both: a code in a scheme, and a property of water that can be observed.</p>
+
+          <section class="activity" id="activity-5" property="hasPart" typeof="LearningResource" resource="#activity-5">
+            <span class="activity__label">Activity 5</span>
+            <h3 property="name">What do these triples make true?</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-5">#activity-5</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>Here is a small permit graph. Using the Defra files, list every type each subject or object acquires. Follow each class up its hierarchy.</p>
+              <pre><code>ex:permit
+    defra-reg:permitSite ex:discharge-point ;
+    defra-reg:permitHolder ex:holder ;
+    defra-core:hasClassification ex:permit-type .
+
+ex:discharge-point
+    defra-water:monitoredAt &lt;https://environment.data.gov.uk/water-quality/sampling-point/AN-CORBY&gt; .</code></pre>
+              <p>Then answer: does anything here make <code>ex:permit</code> a <code><span class="nw">defra-water:</span><wbr><span class="nw">WaterDischargePermit</span></code>?</p>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <dl class="summary-list">
+                  <div class="summary-list__row">
+                    <dt class="summary-list__key"><code>ex:permit</code></dt>
+                    <dd class="summary-list__value"><code>defra-reg:Permit</code>, from the domains of <code>permitSite</code> and <code>permitHolder</code>, and so <code>dcat:Resource</code>. <code>hasClassification</code> has no domain, so it adds nothing.</dd>
+                  </div>
+                  <div class="summary-list__row">
+                    <dt class="summary-list__key"><code><span class="nw">ex:</span><wbr><span class="nw">discharge-point</span></code></dt>
+                    <dd class="summary-list__value"><code>defra-core:Site</code>, from the range of <code>permitSite</code>, and <code><span class="nw">defra-reg:</span><wbr><span class="nw">DischargePoint</span></code>, from the domain of <code>monitoredAt</code>. Through the hierarchy, <code>geo:Feature</code>.</dd>
+                  </div>
+                  <div class="summary-list__row">
+                    <dt class="summary-list__key"><code>ex:holder</code></dt>
+                    <dd class="summary-list__value"><code>defra-core:Party</code>, from the range of <code>permitHolder</code>, and so <code>foaf:Agent</code> and <code>prov:Agent</code>.</dd>
+                  </div>
+                  <div class="summary-list__row">
+                    <dt class="summary-list__key"><code><span class="nw">ex:</span><wbr><span class="nw">permit-type</span></code></dt>
+                    <dd class="summary-list__value"><code>skos:Concept</code>, from the range of <code>hasClassification</code>.</dd>
+                  </div>
+                  <div class="summary-list__row">
+                    <dt class="summary-list__key"><code>AN-CORBY</code></dt>
+                    <dd class="summary-list__value"><code><span class="nw">sosa:</span><wbr><span class="nw">FeatureOfInterest</span></code>, from the range of <code>monitoredAt</code>.</dd>
+                  </div>
+                </dl>
+                <p>Nothing makes the permit a <code><span class="nw">defra-water:</span><wbr><span class="nw">WaterDischargePermit</span></code>. Conclusions climb up the hierarchy, from <code>Permit</code> to <code>dcat:Resource</code>, never down to a narrower class. To say it’s a water discharge permit, the data has to say so, and in Module 6 yours will.</p>
+                <p>Notice also that <code>permitSite</code> only makes the discharge point a site. It’s <code>monitoredAt</code> that makes it a discharge point. Two properties, each adding what it knows.</p>
+              </div>
+            </details>
+          </section>
+
+          <h2 id="hints">Hints that draw no conclusions</h2>
+
+          <p>Not every vocabulary uses <code>rdfs:domain</code> and <code>rdfs:range</code>. Look up <code>sosa:hasFeatureOfInterest</code>, the property linking a sampling or an observation to what it studies:</p>
+
+          <pre><code>sosa:hasFeatureOfInterest a owl:ObjectProperty ;
+  rdfs:label "has feature of interest"@en ;
+  …
+  schema:domainIncludes sosa:Observation ;
+  schema:domainIncludes sosa:Actuation ;
+  schema:domainIncludes sosa:Sampling ;
+  schema:rangeIncludes sosa:FeatureOfInterest ;
+  schema:rangeIncludes sosa:Sample ;
+  owl:inverseOf sosa:isFeatureOfInterestOf ;</code></pre>
+
+          <p><code>schema:domainIncludes</code> and <code>schema:rangeIncludes</code> come from schema.org. They say what the subject and object are <em>expected</em> to be, and they draw no conclusions. SOSA declares them as <code>owl:AnnotationProperty</code>, which is OWL’s way of saying “for people to read, not for drawing conclusions”. Use <code>sosa:hasFeatureOfInterest</code> on anything you like and it stays what it was.</p>
+
+          <p>Hints suit a vocabulary meant for many kinds of observation in many fields. A strict domain on <code>sosa:hasFeatureOfInterest</code> would give a type to every subject that used it, whether the type fitted or not.</p>
+
+          <p>Dublin Core does the same with its own hint, <code>dcam:rangeIncludes</code>. On <code>dct:publisher</code>:</p>
+
+          <pre><code>dcterms:publisher
+    dcam:rangeIncludes dcterms:Agent ;
+    …
+    rdfs:comment "An entity responsible for making the resource available."@en ;</code></pre>
+
+          <p>A publisher is expected to be an agent, but saying <code>dct:publisher</code> doesn’t make it one. Compare <code>dct:title</code>, earlier in this module, which has a real <code>rdfs:range</code> of <code>rdfs:Literal</code>.</p>
+
+          <p>So when you read a property, the first question is which kind of statement you’re looking at:</p>
+          <ul>
+            <li><code>rdfs:domain</code> and <code>rdfs:range</code> are rules, and your data gains types from them</li>
+            <li><code>schema:domainIncludes</code>, <code>schema:rangeIncludes</code> and <code>dcam:rangeIncludes</code> are hints for the people writing the data</li>
+          </ul>
+
+          <section class="activity" id="activity-6" property="hasPart" typeof="LearningResource" resource="#activity-6">
+            <span class="activity__label">Activity 6</span>
+            <h3 property="name">Rule or hint?</h3>
+            <span class="anchor-uri">This activity’s URI: <a href="#activity-6">#activity-6</a></span>
+            <meta property="learningResourceType" content="Activity">
+            <div property="description">
+              <p>For each triple, say what it makes true about its subject and object, if anything.</p>
+              <ol>
+                <li><code><span class="nw">&lt;…/</span><wbr><span class="nw">sampling/</span><wbr><span class="nw">2119744&gt;</span> <span class="nw">sosa:</span><wbr><span class="nw">hasFeatureOfInterest</span> <span class="nw">&lt;sampling-point/</span><wbr><span class="nw">AN-CORBY&gt;</span></code></li>
+                <li><code><span class="nw">ex:permit</span> <span class="nw">defra-reg:</span><wbr><span class="nw">permitHolder</span> <span class="nw">ex:holder</span></code></li>
+                <li><code><span class="nw">dataset:</span><wbr><span class="nw">observations</span> <span class="nw">dct:publisher</span> <span class="nw">&lt;https://environment.data.gov.uk/&gt;</span></code></li>
+              </ol>
+            </div>
+
+            <details class="details">
+              <summary class="details__summary"><span class="details__summary-text">Show the answer</span></summary>
+              <div class="details__text">
+                <ol>
+                  <li>Nothing. SOSA only gives hints for this property. The data from Module 4 states both types itself, as <code>a sosa:Sampling</code> and <code><span class="nw">a</span> <span class="nw">sosa:</span><wbr><span class="nw">FeatureOfInterest</span></code>, which is what a vocabulary with hints relies on.</li>
+                  <li>The permit is a <code>defra-reg:Permit</code> and a <code>dcat:Resource</code>; the holder is a <code>defra-core:Party</code>, a <code>foaf:Agent</code> and a <code>prov:Agent</code>. Defra uses rules.</li>
+                  <li>Nothing about the publisher’s type. It’s expected to be a <code>dct:Agent</code>, but the property doesn’t make it one.</li>
+                </ol>
+              </div>
+            </details>
+          </section>
+
+          <section class="quiz quiz--5" id="quiz" property="hasPart" typeof="Quiz" resource="#quiz">
+            <h2 property="name">Check your understanding</h2>
+            <meta property="assesses" content="Dereferencing terms, class hierarchies, classes, properties and concepts, and the conclusions drawn from domain and range">
+            <p>Choose an answer to see whether it’s right. You can change your answer as often as you like.</p>
+
+            <div class="quiz__questions">
+              <fieldset class="fieldset quiz__question" id="q1" property="hasPart" typeof="Question" resource="#q1">
+                <legend class="fieldset__legend"><span class="caption-m">Question 1 of 5</span><span property="text">You look up <code>skos:Concept</code> and get the whole SKOS vocabulary back. Why?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q1-a">
+                    <input class="radios__input" id="q1-a" name="q1" type="radio">
+                    <label class="radios__label" for="q1-a" property="text">The server couldn’t find the term, so it sent everything.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> The server never heard which term you wanted. That part of the URI stays with the client.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q1-b">
+                    <input class="radios__input" id="q1-b" name="q1" type="radio">
+                    <label class="radios__label" for="q1-b" property="text">It’s a hash URI, so the client asks for the document and finds <code>#Concept</code> inside it.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> The part after <code>#</code> names a part of a document, and it’s never sent to the server.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q1-c">
+                    <input class="radios__input" id="q1-c" name="q1" type="radio">
+                    <label class="radios__label" for="q1-c" property="text">You asked for Turtle, and SKOS is only published as RDF/XML.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> That explains the format you got back, not how much of the vocabulary came with it.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q2" property="hasPart" typeof="Question" resource="#q2">
+                <legend class="fieldset__legend"><span class="caption-m">Question 2 of 5</span><span property="text">What kind of term is <code><span class="nw">sampling-point-type:</span><wbr><span class="nw">SA</span></code>?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q2-a">
+                    <input class="radios__input" id="q2-a" name="q2" type="radio">
+                    <label class="radios__label" for="q2-a" property="text">A class, defined in an ontology.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> Nothing is ever typed as <code>sampling-point-type:SA</code>. Sampling points are classified by it.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q2-b">
+                    <input class="radios__input" id="q2-b" name="q2" type="radio">
+                    <label class="radios__label" for="q2-b" property="text">A datatype property, because it has a notation.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> It has a notation, but it’s the subject of that triple, not the predicate.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q2-c">
+                    <input class="radios__input" id="q2-c" name="q2" type="radio">
+                    <label class="radios__label" for="q2-c" property="text">A concept: a controlled value published in a concept scheme.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> It’s data in a scheme, used as the object of <code><span class="nw">defra-core:</span><wbr><span class="nw">hasClassification</span></code>, and no ontology defines it.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q3" property="hasPart" typeof="Question" resource="#q3">
+                <legend class="fieldset__legend"><span class="caption-m">Question 3 of 5</span><span property="text">Your data says <code><span class="nw">ex:outfall</span> <span class="nw">defra-water:</span><wbr><span class="nw">monitoredAt</span> <span class="nw">ex:station</span></code> and nothing else. What does that make <code>ex:outfall</code>?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q3-a">
+                    <input class="radios__input" id="q3-a" name="q3" type="radio">
+                    <label class="radios__label" for="q3-a" property="text">Nothing, until you state its type.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> <code>monitoredAt</code> has an <code>rdfs:domain</code>, and a domain is a rule. The type follows from the triple.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q3-b">
+                    <input class="radios__input" id="q3-b" name="q3" type="radio">
+                    <label class="radios__label" for="q3-b" property="text">A discharge point, a site and a <code>geo:Feature</code>.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> The domain makes it a <code><span class="nw">defra-reg:</span><wbr><span class="nw">DischargePoint</span></code>, and the hierarchy carries it up to <code>defra-core:Site</code> and <code>geo:Feature</code>.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q3-c">
+                    <input class="radios__input" id="q3-c" name="q3" type="radio">
+                    <label class="radios__label" for="q3-c" property="text">A feature of interest.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> That’s the range, so it applies to the object, <code>ex:station</code>.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q4" property="hasPart" typeof="Question" resource="#q4">
+                <legend class="fieldset__legend"><span class="caption-m">Question 4 of 5</span><span property="text"><code>defra-reg:regulatedProperty</code> has the union of <code>Condition</code> and <code>Limit</code> as its domain. What does <code><span class="nw">ex:bound</span> <span class="nw">defra-reg:</span><wbr><span class="nw">regulatedProperty</span> <span class="nw">determinand:0111</span></code> tell you about <code>ex:bound</code>?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q4-a">
+                    <input class="radios__input" id="q4-a" name="q4" type="radio">
+                    <label class="radios__label" for="q4-a" property="text">It’s both a condition and a limit.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> That would be an intersection. A union is everything that is one or the other.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q4-b">
+                    <input class="radios__input" id="q4-b" name="q4" type="radio">
+                    <label class="radios__label" for="q4-b" property="text">It’s a condition, because <code>Condition</code> is listed first.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> The order of a union doesn’t matter.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q4-c">
+                    <input class="radios__input" id="q4-c" name="q4" type="radio">
+                    <label class="radios__label" for="q4-c" property="text">It’s a condition or a limit, but not which.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> To know which, you need another triple, such as a permit’s <code>defra-reg:hasCondition</code> pointing at it.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="fieldset quiz__question" id="q5" property="hasPart" typeof="Question" resource="#q5">
+                <legend class="fieldset__legend"><span class="caption-m">Question 5 of 5</span><span property="text">SOSA gives <code>sosa:hasFeatureOfInterest</code> a <code>schema:rangeIncludes</code> of <code><span class="nw">sosa:</span><wbr><span class="nw">FeatureOfInterest</span></code>. What does using the property make its object?</span></legend>
+                <p class="quiz__mark quiz__mark--correct"><strong class="tag tag--green">Correct</strong></p>
+                <p class="quiz__mark quiz__mark--incorrect"><strong class="tag tag--red">Not quite</strong></p>
+                <div class="radios">
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q5-a">
+                    <input class="radios__input" id="q5-a" name="q5" type="radio">
+                    <label class="radios__label" for="q5-a" property="text">A <code><span class="nw">sosa:</span><wbr><span class="nw">FeatureOfInterest</span></code>.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> That would be true of an <code>rdfs:range</code>. This is a hint.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--correct" property="acceptedAnswer suggestedAnswer" typeof="Answer" resource="#q5-b">
+                    <input class="radios__input" id="q5-b" name="q5" type="radio">
+                    <label class="radios__label" for="q5-b" property="text">Nothing: it says what the object is expected to be.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Correct.</span> <code>schema:rangeIncludes</code> is an annotation for people, so the data has to state the type itself.</p></div>
+                  </div>
+                  <div class="radios__item radios__item--incorrect" property="suggestedAnswer" typeof="Answer" resource="#q5-c">
+                    <input class="radios__input" id="q5-c" name="q5" type="radio">
+                    <label class="radios__label" for="q5-c" property="text">An error, unless it’s already typed as a feature of interest.</label>
+                    <div class="radios__feedback" property="answerExplanation"><p><span class="radios__feedback-verdict">Not quite.</span> Neither hints nor rules reject data. Checking data is a job for SHACL.</p></div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="quiz__score" aria-live="polite">
+              <p>You’ve answered <span class="count-answered"></span> of 5 questions and got <span class="count-correct"></span> right.</p>
+            </div>
+
+            <div class="quiz__complete">
+              <div class="panel">
+                <h2 class="panel__title">Module 5 complete</h2>
+                <p class="panel__body">You answered every question correctly</p>
+              </div>
+            </div>
+          </section>
+
+          <h2 id="summary">Summary</h2>
+
+          <p>In this module you learned that:</p>
+          <ul>
+            <li>a term is a URI, and reading a vocabulary starts by following it, or by reading the file that defines it when it can’t be followed yet</li>
+            <li>a term describes itself with triples: a label, a definition, the vocabulary that defines it, its type, and where it sits in a hierarchy</li>
+            <li>a documentation page shows a term’s triples as labelled fields, and a Turtle block can be read the same way when there is no page</li>
+            <li><code>rdfs:subClassOf</code> carries an instance up to every superclass, and conclusions never go down to a narrower class</li>
+            <li>classes and properties are a vocabulary’s schema, and SKOS concepts are controlled values published as data in a scheme</li>
+            <li><code>rdfs:domain</code> and <code>rdfs:range</code> are rules: using a property gives its subject and object their types, whatever the author meant</li>
+            <li>a union domain says a subject is one of several classes without saying which</li>
+            <li><code>schema:domainIncludes</code>, <code>schema:rangeIncludes</code> and <code>dcam:rangeIncludes</code> are hints, and draw no conclusions</li>
+          </ul>
+
+          <p>Module 6 uses these terms to describe one real thing: a water discharge permit, its discharge point and its holder, linked to <code>AN-CORBY</code>.</p>
+
+          <nav class="pagination" aria-label="Pagination">
+            <div class="pagination__prev">
+              <a class="pagination__link" href="../serialisation-and-content-negotiation/" rel="prev">
+                <span class="pagination__label">Previous</span>
+                Module 4: Serialisation and content negotiation
+              </a>
+            </div>
+            <div class="pagination__upcoming">
+              <span class="pagination__label">Next, coming soon</span>
+              <strong>Module 6: Making instances</strong>
+            </div>
+          </nav>
+        </div>
+
+        <div class="grid-column-one-third">
+          <aside class="related" role="complementary">
+            <h2>This page is data</h2>
+            <p>This page describes itself with schema.org terms such as <code>LearningResource</code>, <code>teaches</code> and <code>hasPart</code>. Each one is a URI, and following it in your browser takes you to a page with its definition, its superclasses and the properties it can have.</p>
+            <p>The conclusions in this module were checked with an RDFS reasoner against version 0.1.0 of the Defra ontologies.</p>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <div class="width-container">
+      <p>Linked Data Bootcamp is built with HTML and CSS.</p>
+      <p>This course is dedicated to the public domain under <a href="https://creativecommons.org/publicdomain/zero/1.0/" rel="license">CC0 1.0 Universal</a>.</p>
+      <p>Contains public sector information from the Environment Agency and Defra, licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>.</p>
+    </div>
+  </footer>
+</body>
+</html>

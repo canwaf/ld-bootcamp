@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Learn Linked Data – Linked Data Bootcamp</title>
-  <meta name="description" content="A self-paced course in Linked Data: from keys to URIs, authority and persistence, RDF vocabularies, serialisation and content negotiation, and SPARQL.">
+  <meta name="description" content="A self-paced course in Linked Data: from keys to URIs, authority and persistence, RDF vocabularies, serialisation and content negotiation, reading vocabularies and making instances, CSV on the Web, and SPARQL.">
   <link rel="stylesheet" href="assets/bootcamp.css">
 </head>
 <body vocab="https://schema.org/" prefix="dct: http://purl.org/dc/terms/">
@@ -45,10 +45,13 @@
             <li property="teaches">decide who mints a URI and keep it stable</li>
             <li property="teaches">describe things as RDF using shared vocabularies</li>
             <li property="teaches">serve one resource in many formats with content negotiation</li>
+            <li property="teaches">read a vocabulary and predict what its terms say about your data</li>
+            <li property="teaches">describe things as instances of a vocabulary’s classes</li>
+            <li property="teaches">describe a table with CSV on the Web and convert it to RDF</li>
             <li property="teaches">query graphs with SPARQL</li>
           </ul>
 
-          <p>Every example follows one water quality sampling point, the samples taken there and the observations made on them, so each module builds on the one before.</p>
+          <p>The examples follow one water quality sampling point, the samples taken there and the observations made on them, and a discharge permit whose effluent is sampled at that same point, so each module builds on the one before.</p>
 
           <a href="modules/keys-to-uris/" role="button" draggable="false" class="button button--start">
             Start now
@@ -65,6 +68,8 @@
           <ul>
             <li>a web browser</li>
             <li>a terminal with <code>curl</code>, from Module 4 onwards</li>
+            <li>Python 3 with the <code>rdflib</code> package, from Module 4 onwards, and <code>owlrl</code>, from Module 6 onwards</li>
+            <li>Docker or Podman, from Module 8 onwards</li>
           </ul>
 
           <p>Each module ends with a short quiz. Choose an answer and you’ll see straight away whether it’s right, and why. You can change your answer as often as you like.</p>
@@ -104,11 +109,43 @@
               </span>
               <strong class="task-list__status tag tag--turquoise">Available</strong>
             </li>
+            <li class="task-list__item" property="hasPart" typeof="LearningResource" resource="modules/reading-a-vocabulary/">
+              <span class="task-list__name">
+                <a href="modules/reading-a-vocabulary/" property="url"><span property="name">Module 5: Reading a vocabulary</span></a>
+                <span class="task-list__hint" property="description">Looking up a term, telling classes, properties and concepts apart, and predicting what a property’s domain and range say about your data.</span>
+                <meta property="position" content="5">
+              </span>
+              <strong class="task-list__status tag tag--turquoise">Available</strong>
+            </li>
+            <li class="task-list__item" property="hasPart" typeof="LearningResource" resource="modules/making-instances/">
+              <span class="task-list__name">
+                <span property="name">Module 6: Making instances</span>
+                <span class="task-list__hint" property="description">Describing a water discharge permit and its discharge point by hand, linked to the sampling point that monitors it.</span>
+                <meta property="position" content="6">
+              </span>
+              <span class="task-list__status">Coming soon</span>
+            </li>
+            <li class="task-list__item" property="hasPart" typeof="LearningResource" resource="modules/csv-on-the-web/">
+              <span class="task-list__name">
+                <span property="name">Module 7: Describing tables with CSV on the Web</span>
+                <span class="task-list__hint" property="description">Writing CSVW metadata that turns each row of a table into the graph you meant, with keys becoming URIs.</span>
+                <meta property="position" content="7">
+              </span>
+              <span class="task-list__status">Coming soon</span>
+            </li>
+            <li class="task-list__item" property="hasPart" typeof="LearningResource" resource="modules/csv-to-rdf/">
+              <span class="task-list__name">
+                <span property="name">Module 8: From CSV to RDF</span>
+                <span class="task-list__hint" property="description">Converting tables to RDF with csv2rdf in minimal mode, and checking the output against your hand-written graph.</span>
+                <meta property="position" content="8">
+              </span>
+              <span class="task-list__status">Coming soon</span>
+            </li>
             <li class="task-list__item" property="hasPart" typeof="LearningResource" resource="modules/sparql/">
               <span class="task-list__name">
-                <span property="name">Module 5: Querying with SPARQL</span>
+                <span property="name">Module 9: Querying with SPARQL</span>
                 <span class="task-list__hint" property="description">Asking questions of a graph: patterns, joins on URIs, BIND, string functions, UNION and OPTIONAL.</span>
-                <meta property="position" content="5">
+                <meta property="position" content="9">
               </span>
               <span class="task-list__status">Coming soon</span>
             </li>
@@ -127,7 +164,7 @@
 
       <meta property="inLanguage" content="en-GB">
       <meta property="educationalLevel" content="Beginner">
-      <meta property="dct:modified" content="2026-10-28">
+      <meta property="dct:modified" content="2026-10-29">
       <link property="license dct:license" href="https://creativecommons.org/publicdomain/zero/1.0/">
     </main>
   </div>
